@@ -1,0 +1,36 @@
+<Project>
+
+  <PropertyGroup>
+    <FodyVersion>6.6.1</FodyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <WarningsAsErrors>CS8785</WarningsAsErrors>
+    <LangVersion>latest</LangVersion>
+    <AnalysisLevel>5.0</AnalysisLevel>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <IsPackable>false</IsPackable>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' != ''">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>huoshan12345</Authors>
+    <Description>A workaround for interface's default method invocation before official support of C# team</Description>
+    <Copyright>Copyright © huoshan12345 2018-$([System.DateTime]::Now.ToString('yyyy'))</Copyright>
+    <PackageTags>IL;MSIL;Fody;ILWeaving;Cecil</PackageTags>
+    <PackageProjectUrl>https://github.com/huoshan12345/MixedIL.Fody</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl>https://github.com/huoshan12345/MixedIL.Fody/raw/master/icon.png</PackageIconUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

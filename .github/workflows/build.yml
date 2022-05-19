@@ -1,0 +1,57 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  DOTNET_NOLOGO: 1
+  SLN_PATH: src/MixedIL.Fody.sln
+  VERSION: 0.0.1
+
+jobs:
+  build-windows:
+    name: build-windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: NuGet Restore
+        run: dotnet restore src/MixedIL.Fody.sln
+
+      - name: Build Debug
+        run: dotnet build -c Debug --no-restore ${{ env.SLN_PATH }}
+
+      - name: Build Release
+        run: dotnet build -c Release --no-restore ${{ env.SLN_PATH }}
+
+      - name: Test Debug
+        run: dotnet test -c Debug --no-build ${{ env.SLN_PATH }}
+
+      - name: Test Release
+        run: dotnet test -c Release --no-build ${{ env.SLN_PATH }}
+
+      - name: NuGet Publish
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: |
+          $dir = [IO.Path]::Combine(".", "output")
+          $path = [IO.Path]::Combine($dir, "*.nupkg")
+          dotnet pack -o $dir -c Release ${{ env.SLN_PATH }} -p:PackageVersion=${{ env.VERSION }} --no-restore
+          dotnet nuget push $path -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate --no-symbols true
+
+      - name: Create Tag
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: richardsimko/update-tag@v1
+        with:
+          tag_name: ${{ env.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
