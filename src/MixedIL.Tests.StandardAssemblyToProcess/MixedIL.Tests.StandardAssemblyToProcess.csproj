@@ -1,20 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\MixedIL\MixedIL.targets" />
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <DisableFody>true</DisableFody>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\MixedIL.Tests.AssemblyToProcess\**\*.cs"
-             Exclude="..\MixedIL.Tests.AssemblyToProcess\obj\**;..\MixedIL.Tests.AssemblyToProcess\AssemblyToProcessReference.cs"
-             Link="AssemblyToProcess\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\MixedIL.Tests.AssemblyToProcess\**\*.cs;" Exclude="..\MixedIL.Tests.AssemblyToProcess\obj\**;..\MixedIL.Tests.AssemblyToProcess\AssemblyToProcessReference.cs" Link="AssemblyToProcess\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\MixedIL.Tests.AssemblyToProcess\**\*.il;" Exclude="..\MixedIL.Tests.AssemblyToProcess\obj\**;" Link="AssemblyToProcess\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MixedIL\MixedIL.csproj" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+  </ItemGroup>
 </Project>
+

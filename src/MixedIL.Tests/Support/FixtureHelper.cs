@@ -19,6 +19,7 @@ namespace MixedIL.Tests.Support
             Directory.CreateDirectory(asmTestDir);
 
             var destFile = CopyFile(assemblyPath, asmTestDir);
+            CopyILFile(assemblyPath, asmTestDir);
             CopyFile(Path.ChangeExtension(assemblyPath, ".pdb"), asmTestDir);
             CopyFile(Path.ChangeExtension(assemblyPath, ".il.dll"), asmTestDir);
             CopyFile(Path.Combine(assemblyDir, "MixedIL.dll"), asmTestDir);
@@ -34,6 +35,11 @@ namespace MixedIL.Tests.Support
             var dest = Path.Combine(targetDir, Path.GetFileName(fileName)!);
             File.Copy(fileName, dest);
             return dest;
+        }
+
+        private static void CopyILFile(string fileName, string targetDir)
+        {
+           
         }
 
         private static void EmptyDirectory(string path)

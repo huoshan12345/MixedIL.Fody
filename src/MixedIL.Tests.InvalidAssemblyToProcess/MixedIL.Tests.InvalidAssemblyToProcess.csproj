@@ -1,18 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <DisableFody>true</DisableFody>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\MixedIL.Tests.AssemblyToProcess\~TestTypes\*.cs"
-             Link="AssemblyToProcess\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\MixedIL.Tests.AssemblyToProcess\~TestTypes\*.cs" Link="AssemblyToProcess\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MixedIL\MixedIL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
   </ItemGroup>
 
 </Project>

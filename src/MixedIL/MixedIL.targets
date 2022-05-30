@@ -7,7 +7,10 @@
     <!-- If ILAsmToolPath is specified, it will be used and no packages will be restored
          Otherwise packages will be restored and ilasm and ildasm will be referenced from their packages.  -->
     <_IlasmDir Condition="'$(ILAsmToolPath)' != ''">$([MSBuild]::NormalizeDirectory($(ILAsmToolPath)))</_IlasmDir>
+    <_DllFile>@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).il.dll', ' ')</_DllFile>
+    <_PdbFile>@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).il.pdb', ' ')</_PdbFile>
   </PropertyGroup>
+
 
   <ItemGroup Condition="'$(ILAsmToolPath)' == ''">
     <_IlasmPackageReference Include="$(MicrosoftNetCoreIlasmPackageName)" Version="$(MicrosoftNETCoreILAsmVersion)" />
@@ -26,27 +29,18 @@
     </PropertyGroup>
   </Target>
 
-  <ItemGroup>
-    <IL Include="**\*.il" Exclude="**\obj\**\*.il;**\bin\**\*.il" />
-  </ItemGroup>
-
-  <Target Name="InitializeIL">
-    <PropertyGroup>
-      <AssemblyFile>@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).il.dll', ' ')</AssemblyFile>
-      <PdbFile>@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).il.pdb', ' ')</PdbFile>
-    </PropertyGroup>
-
+  <Target Name="InitializeIL" BeforeTargets="CoreCompile">
     <ItemGroup>
-      <_NeedToBeCopied Include="$(AssemblyFile)" />
-      <_NeedToBeCopied Include="$(PdbFile)" />
+      <_ILInNone Include="@(None)" Exclude="'%(Extension)' == '.il'" />
+      <_IL Include="**\*.il" Exclude="**\obj\**\*.il;**\bin\**\*.il" />
+      <_IL Include="@(_ILInNone)" />
     </ItemGroup>
-
   </Target>
 
   <Target Name="CoreCompileIL"
-          Condition="Exists(@(IL))"
-          DependsOnTargets="ResolveIlAsmToolPaths; InitializeIL"
-          AfterTargets="CoreCompile">
+          Condition="@(_IL->Count()) != 0"
+          DependsOnTargets="ResolveIlAsmToolPaths"
+          AfterTargets="InitializeIL">
 
     <PropertyGroup>
       <_OutputTypeArgument>-DLL</_OutputTypeArgument>
@@ -57,11 +51,11 @@
       <_IlasmSwitches Condition="'$(Configuration)' == 'Debug'">$(_IlasmSwitches) -DEBUG -PDBFMT=PORTABLE</_IlasmSwitches>
       <_IlasmSwitches Condition="'$(Configuration)' == 'Release'">$(_IlasmSwitches) -PDBFMT=PORTABLE</_IlasmSwitches>
       <_IlasmSwitches Condition="'$(Optimize)' == 'True'">$(_IlasmSwitches) -OPTIMIZE</_IlasmSwitches>
-      <_ILAsm>"$(_IlasmDir)ilasm" $(_IlasmSwitches) $(_OutputTypeArgument) $(IlasmFlags) -OUTPUT="$(AssemblyFile)"</_ILAsm>
+      <_ILAsm>"$(_IlasmDir)ilasm" $(_IlasmSwitches) $(_OutputTypeArgument) $(IlasmFlags) -OUTPUT="$(_DllFile)"</_ILAsm>
     </PropertyGroup>
 
     <PropertyGroup>
-      <_ILAsm>$(_ILAsm) @(IL->'"%(FullPath)"', ' ')</_ILAsm>
+      <_ILAsm>$(_ILAsm) @(_IL->Distinct()->'"%(FullPath)"', ' ')</_ILAsm>
     </PropertyGroup>
 
     <Exec Command="$(_ILAsm)">
@@ -70,7 +64,28 @@
 
     <Error Text="ILAsm failed" Condition="'$(_ILAsmExitCode)' != '0'" />
 
-    <Copy SourceFiles="@(_NeedToBeCopied)" DestinationFolder="$(OutDir)" Condition="Exists('%(FullPath)')" />
+  </Target>
+
+
+  <Target Name="_CopyILFiles" AfterTargets="_GetCopyToOutputDirectoryItemsFromTransitiveProjectReferences">
+
+    <ItemGroup>
+      <_IlFiles Include="$(_DllFile)" />
+      <_IlFiles Include="$(_PdbFile)" />
+    </ItemGroup>
+
+    <!--<Copy SourceFiles="@(_IlFiles)" DestinationFolder="$(OutDir)"/>-->
+
+    <AssignTargetPath Files="@(_IlFiles)" RootFolder="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="AssignedFiles" ItemName="ContentWithTargetPath" />
+    </AssignTargetPath>
+
+    <ItemGroup>
+      <_TransitiveItemsToCopyToOutputDirectory Include="$(_IlFiles)" />
+    </ItemGroup>
+
+    <Message Text="sssssssssssssssssss @(_TransitiveItemsToCopyToOutputDirectory)" Importance="high"/>
+
   </Target>
 
 </Project>
