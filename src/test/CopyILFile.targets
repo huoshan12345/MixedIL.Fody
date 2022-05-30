@@ -1,0 +1,13 @@
+<Project>
+  <!-- Include the files from the output directory when other projects reference this -->
+  <Target Name="_CopyILFiles" BeforeTargets="GetCopyToOutputDirectoryItems">
+    <ItemGroup>
+      <_OutputIlFiles Include="@(_IlFiles)"
+                      TargetPath="%(Filename)%(Extension)"/>
+
+      <AllItemsFullPathWithTargetPath Include="@(_OutputIlFiles)">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AllItemsFullPathWithTargetPath>
+    </ItemGroup>
+  </Target>
+</Project>

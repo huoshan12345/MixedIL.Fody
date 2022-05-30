@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="$(FodyVersion)" />
+    <PackageReference Include="FodyHelpers" Version="6.6.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" PrivateAssets="All" />
@@ -15,14 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MixedIL.Fody\MixedIL.Fody.csproj" />
+    <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
     <ProjectReference Include="..\MixedIL.Tests.SourceGenerator\MixedIL.Tests.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" />
     <ProjectReference Include="..\MixedIL.Tests.AssemblyToProcess\MixedIL.Tests.AssemblyToProcess.csproj" />
     <ProjectReference Include="..\MixedIL.Tests.InvalidAssemblyToProcess\MixedIL.Tests.InvalidAssemblyToProcess.csproj" />
     <ProjectReference Include="..\MixedIL.Tests.StandardAssemblyToProcess\MixedIL.Tests.StandardAssemblyToProcess.csproj">
       <Aliases>standard</Aliases>
     </ProjectReference>
-    <ProjectReference Include="..\MixedIL\MixedIL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

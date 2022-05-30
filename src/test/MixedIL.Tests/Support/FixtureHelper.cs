@@ -19,27 +19,31 @@ namespace MixedIL.Tests.Support
             Directory.CreateDirectory(asmTestDir);
 
             var destFile = CopyFile(assemblyPath, asmTestDir);
-            CopyILFile(assemblyPath, asmTestDir);
             CopyFile(Path.ChangeExtension(assemblyPath, ".pdb"), asmTestDir);
-            CopyFile(Path.ChangeExtension(assemblyPath, ".il.dll"), asmTestDir);
+            CopyFile(Path.ChangeExtension(assemblyPath, ".il.dll"), asmTestDir, true);
+            CopyFile(Path.ChangeExtension(assemblyPath, ".il.pdb"), asmTestDir, true);
             CopyFile(Path.Combine(assemblyDir, "MixedIL.dll"), asmTestDir);
 
             return destFile;
         }
 
-        private static string CopyFile(string fileName, string targetDir)
+        private static string CopyFile(string fileName, string targetDir, bool ignoreError = false)
         {
             if (!File.Exists(fileName))
-                throw new InvalidOperationException($"File not found: {fileName}");
+            {
+                if (ignoreError)
+                {
+                    return fileName;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"File not found: {fileName}");
+                }
+            }
 
             var dest = Path.Combine(targetDir, Path.GetFileName(fileName)!);
             File.Copy(fileName, dest);
             return dest;
-        }
-
-        private static void CopyILFile(string fileName, string targetDir)
-        {
-           
         }
 
         private static void EmptyDirectory(string path)

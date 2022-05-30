@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MixedIL\MixedIL.csproj" />
+    <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

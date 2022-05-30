@@ -3,18 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL", "MixedIL\MixedIL.csproj", "{15054D3D-0FA0-4400-83B1-608B864FF767}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL", "src\MixedIL\MixedIL.csproj", "{15054D3D-0FA0-4400-83B1-608B864FF767}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CD658072-42FB-4B0B-BED8-E88B07878E3F} = {CD658072-42FB-4B0B-BED8-E88B07878E3F}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Fody", "MixedIL.Fody\MixedIL.Fody.csproj", "{CD658072-42FB-4B0B-BED8-E88B07878E3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Fody", "src\MixedIL.Fody\MixedIL.Fody.csproj", "{CD658072-42FB-4B0B-BED8-E88B07878E3F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{0A4F85AF-2ADB-42EA-8A29-DDFABBE0FCCC}"
+	ProjectSection(SolutionItems) = preProject
+		test\CopyILFile.targets = test\CopyILFile.targets
+		test\Directory.Build.props = test\Directory.Build.props
+		test\Directory.Build.targets = test\Directory.Build.targets
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests", "MixedIL.Tests\MixedIL.Tests.csproj", "{B2678B5D-D3D9-455F-9FD3-1241A231BE84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests", "test\MixedIL.Tests\MixedIL.Tests.csproj", "{B2678B5D-D3D9-455F-9FD3-1241A231BE84}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.AssemblyToProcess", "MixedIL.Tests.AssemblyToProcess\MixedIL.Tests.AssemblyToProcess.csproj", "{6299C31F-7AAA-4232-9A4E-E9564439797F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.AssemblyToProcess", "test\MixedIL.Tests.AssemblyToProcess\MixedIL.Tests.AssemblyToProcess.csproj", "{6299C31F-7AAA-4232-9A4E-E9564439797F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{41D4FE14-0B62-4A04-862B-D4482AAFCD18}"
 	ProjectSection(SolutionItems) = preProject
@@ -24,19 +29,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{41D4FE14
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{BBD57099-9025-40DB-9A1E-5094DE6736A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Example", "MixedIL.Example\MixedIL.Example.csproj", "{CB5CBF4D-EBEB-4323-A72E-9CE2151C5630}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Example", "src\MixedIL.Example\MixedIL.Example.csproj", "{CB5CBF4D-EBEB-4323-A72E-9CE2151C5630}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.StandardAssemblyToProcess", "MixedIL.Tests.StandardAssemblyToProcess\MixedIL.Tests.StandardAssemblyToProcess.csproj", "{4D4F5599-CE46-4BD6-8880-4F715DAEF05A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.StandardAssemblyToProcess", "test\MixedIL.Tests.StandardAssemblyToProcess\MixedIL.Tests.StandardAssemblyToProcess.csproj", "{4D4F5599-CE46-4BD6-8880-4F715DAEF05A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.InvalidAssemblyToProcess", "MixedIL.Tests.InvalidAssemblyToProcess\MixedIL.Tests.InvalidAssemblyToProcess.csproj", "{B8DC8D53-588F-4451-A676-23127D07ED20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.InvalidAssemblyToProcess", "test\MixedIL.Tests.InvalidAssemblyToProcess\MixedIL.Tests.InvalidAssemblyToProcess.csproj", "{B8DC8D53-588F-4451-A676-23127D07ED20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CFB3FFC9-C653-4830-A696-CE150BECC295}"
 	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Directory.Build.targets = src\Directory.Build.targets
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.SourceGenerator", "MixedIL.Tests.SourceGenerator\MixedIL.Tests.SourceGenerator.csproj", "{FE747136-736B-4D37-A9FB-61F1B4872933}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.SourceGenerator", "test\MixedIL.Tests.SourceGenerator\MixedIL.Tests.SourceGenerator.csproj", "{FE747136-736B-4D37-A9FB-61F1B4872933}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

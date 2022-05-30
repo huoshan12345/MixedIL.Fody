@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\MixedIL\MixedIL.targets" />
+  <Import Project="..\..\src\MixedIL\MixedIL.targets" />
+  <Import Project="..\CopyILFile.targets" />
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -9,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MixedIL\MixedIL.csproj" />
+    <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
   </ItemGroup>
