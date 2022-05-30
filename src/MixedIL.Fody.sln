@@ -19,9 +19,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{41D4FE14-0B62-4A04-862B-D4482AAFCD18}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
-		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
-		MixedIL.targets = MixedIL.targets
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
@@ -33,9 +30,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.StandardAssem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.InvalidAssemblyToProcess", "MixedIL.Tests.InvalidAssemblyToProcess\MixedIL.Tests.InvalidAssemblyToProcess.csproj", "{B8DC8D53-588F-4451-A676-23127D07ED20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.SourceGenerator", "MixedIL.Tests.SourceGenerator\MixedIL.Tests.SourceGenerator.csproj", "{885C5944-204A-443B-821A-A743441FB795}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CFB3FFC9-C653-4830-A696-CE150BECC295}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.SourceGenerator", "MixedIL.Tests.SourceGenerator\MixedIL.Tests.SourceGenerator.csproj", "{FE747136-736B-4D37-A9FB-61F1B4872933}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +72,10 @@ Global
 		{B8DC8D53-588F-4451-A676-23127D07ED20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8DC8D53-588F-4451-A676-23127D07ED20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8DC8D53-588F-4451-A676-23127D07ED20}.Release|Any CPU.Build.0 = Release|Any CPU
-		{885C5944-204A-443B-821A-A743441FB795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{885C5944-204A-443B-821A-A743441FB795}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{885C5944-204A-443B-821A-A743441FB795}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{885C5944-204A-443B-821A-A743441FB795}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE747136-736B-4D37-A9FB-61F1B4872933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE747136-736B-4D37-A9FB-61F1B4872933}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE747136-736B-4D37-A9FB-61F1B4872933}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE747136-736B-4D37-A9FB-61F1B4872933}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,7 +88,7 @@ Global
 		{CB5CBF4D-EBEB-4323-A72E-9CE2151C5630} = {BBD57099-9025-40DB-9A1E-5094DE6736A9}
 		{4D4F5599-CE46-4BD6-8880-4F715DAEF05A} = {0A4F85AF-2ADB-42EA-8A29-DDFABBE0FCCC}
 		{B8DC8D53-588F-4451-A676-23127D07ED20} = {0A4F85AF-2ADB-42EA-8A29-DDFABBE0FCCC}
-		{885C5944-204A-443B-821A-A743441FB795} = {0A4F85AF-2ADB-42EA-8A29-DDFABBE0FCCC}
+		{FE747136-736B-4D37-A9FB-61F1B4872933} = {0A4F85AF-2ADB-42EA-8A29-DDFABBE0FCCC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8580ABB-FF0F-45AA-B6DA-78D1AE90E5C6}

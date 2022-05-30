@@ -1,0 +1,76 @@
+﻿<Project>
+  <PropertyGroup>
+    <MicrosoftNetCoreIlasmPackageRuntimeId Condition="'$(MicrosoftNetCoreIlasmPackageRuntimeId)' == ''">$(NETCoreSdkPortableRuntimeIdentifier)</MicrosoftNetCoreIlasmPackageRuntimeId>
+    <MicrosoftNETCoreILAsmVersion Condition="'$(MicrosoftNETCoreILAsmVersion)' == ''">6.0.0</MicrosoftNETCoreILAsmVersion>
+    <MicrosoftNetCoreIlasmPackageName>runtime.$(MicrosoftNetCoreIlasmPackageRuntimeId).microsoft.netcore.ilasm</MicrosoftNetCoreIlasmPackageName>
+
+    <!-- If ILAsmToolPath is specified, it will be used and no packages will be restored
+         Otherwise packages will be restored and ilasm and ildasm will be referenced from their packages.  -->
+    <_IlasmDir Condition="'$(ILAsmToolPath)' != ''">$([MSBuild]::NormalizeDirectory($(ILAsmToolPath)))</_IlasmDir>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(ILAsmToolPath)' == ''">
+    <_IlasmPackageReference Include="$(MicrosoftNetCoreIlasmPackageName)" Version="$(MicrosoftNETCoreILAsmVersion)" />
+    <PackageReference Include="@(_IlasmPackageReference)" ExcludeAssets="native" PrivateAssets="all" IsImplicitlyDefined="true" />
+  </ItemGroup>
+
+  <Target Name="ResolveIlAsmToolPaths">
+    <ItemGroup>
+      <_IlasmPackageReference NativePath="$(NuGetPackageRoot)\%(Identity)\%(Version)\runtimes\$(MicrosoftNetCoreIlasmPackageRuntimeId)\native" />
+      <_IlasmSourceFiles Include="%(_IlasmPackageReference.NativePath)\**\*" />
+    </ItemGroup>
+    <Error Condition="!Exists('%(_IlasmPackageReference.NativePath)')" Text="Package %(_IlasmPackageReference.Identity)\%(_IlasmPackageReference.Version) was not restored" />
+
+    <PropertyGroup>
+      <_IlasmDir Condition="'$(_IlasmDir)' == '' and '%(_IlasmPackageReference.Identity)' == '$(MicrosoftNetCoreIlasmPackageName)'">%(_IlasmPackageReference.NativePath)/</_IlasmDir>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <IL Include="**\*.il" Exclude="**\obj\**\*.il;**\bin\**\*.il" />
+  </ItemGroup>
+
+  <Target Name="InitializeIL">
+    <PropertyGroup>
+      <AssemblyFile>@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).il.dll', ' ')</AssemblyFile>
+      <PdbFile>@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).il.pdb', ' ')</PdbFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_NeedToBeCopied Include="$(AssemblyFile)" />
+      <_NeedToBeCopied Include="$(PdbFile)" />
+    </ItemGroup>
+
+  </Target>
+
+  <Target Name="CoreCompileIL"
+          Condition="Exists(@(IL))"
+          DependsOnTargets="ResolveIlAsmToolPaths; InitializeIL"
+          AfterTargets="CoreCompile">
+
+    <PropertyGroup>
+      <_OutputTypeArgument>-DLL</_OutputTypeArgument>
+
+      <_IlasmSwitches>-QUIET -NOLOGO</_IlasmSwitches>
+      <_IlasmSwitches Condition="'$(FoldIdenticalMethods)' == 'True'">$(_IlasmSwitches) -FOLD</_IlasmSwitches>
+      <_IlasmSwitches Condition="'$(SizeOfStackReserve)' != ''">$(_IlasmSwitches) -STACK=$(SizeOfStackReserve)</_IlasmSwitches>
+      <_IlasmSwitches Condition="'$(Configuration)' == 'Debug'">$(_IlasmSwitches) -DEBUG -PDBFMT=PORTABLE</_IlasmSwitches>
+      <_IlasmSwitches Condition="'$(Configuration)' == 'Release'">$(_IlasmSwitches) -PDBFMT=PORTABLE</_IlasmSwitches>
+      <_IlasmSwitches Condition="'$(Optimize)' == 'True'">$(_IlasmSwitches) -OPTIMIZE</_IlasmSwitches>
+      <_ILAsm>"$(_IlasmDir)ilasm" $(_IlasmSwitches) $(_OutputTypeArgument) $(IlasmFlags) -OUTPUT="$(AssemblyFile)"</_ILAsm>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <_ILAsm>$(_ILAsm) @(IL->'"%(FullPath)"', ' ')</_ILAsm>
+    </PropertyGroup>
+
+    <Exec Command="$(_ILAsm)">
+      <Output TaskParameter="ExitCode" PropertyName="_ILAsmExitCode" />
+    </Exec>
+
+    <Error Text="ILAsm failed" Condition="'$(_ILAsmExitCode)' != '0'" />
+
+    <Copy SourceFiles="@(_NeedToBeCopied)" DestinationFolder="$(OutDir)" Condition="Exists('%(FullPath)')" />
+  </Target>
+
+</Project>

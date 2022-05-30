@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MixedIL.Tests.AssemblyToProcess
+﻿namespace MixedIL.Tests.AssemblyToProcess
 {
-    public partial class TestClass
+    public class ObjectHelper
     {
-        public static partial bool AreSame<T>(ref T a, ref T b);
+        [MixedIL]
+        public static extern bool AreSame<T>(ref T a, ref T b);
     }
 }

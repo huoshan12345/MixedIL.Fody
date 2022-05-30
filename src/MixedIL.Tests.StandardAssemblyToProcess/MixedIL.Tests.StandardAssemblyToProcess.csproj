@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MixedIL\MixedIL.csproj" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Reflection;
-using Fody;
-using MixedIL.Fody;
-using MixedIL.Tests.AssemblyToProcess;
+﻿using MixedIL.Tests.AssemblyToProcess;
 using MixedIL.Tests.InvalidAssemblyToProcess;
 using MixedIL.Tests.Support;
-using Xunit;
 
 namespace MixedIL.Tests.Weaving
 {

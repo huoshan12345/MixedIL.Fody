@@ -57,12 +57,11 @@ namespace MixedIL.Tests.SourceGenerator
 
             foreach (var type in types)
             {
-                var idx = type.Name.IndexOf("TestCases", StringComparison.Ordinal);
+                var idx = type.Name.IndexOf("Tests", StringComparison.Ordinal);
                 if (idx < 0)
                     continue;
-
-                var className = type.Name.Substring(0, idx) + "Tests";
-                var (name, code) = TestsSource.Generate(type, className);
+                
+                var (name, code) = TestsSource.Generate(type);
                 context.AddSource(name, code);
             }
         }
