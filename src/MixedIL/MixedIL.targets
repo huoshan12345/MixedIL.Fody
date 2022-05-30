@@ -64,28 +64,25 @@
 
     <Error Text="ILAsm failed" Condition="'$(_ILAsmExitCode)' != '0'" />
 
-  </Target>
-
-
-  <Target Name="_CopyILFiles" AfterTargets="_GetCopyToOutputDirectoryItemsFromTransitiveProjectReferences">
-
     <ItemGroup>
       <_IlFiles Include="$(_DllFile)" />
       <_IlFiles Include="$(_PdbFile)" />
     </ItemGroup>
 
-    <!--<Copy SourceFiles="@(_IlFiles)" DestinationFolder="$(OutDir)"/>-->
+    <Copy SourceFiles="@(_IlFiles)" DestinationFolder="$(OutDir)"/>
 
-    <AssignTargetPath Files="@(_IlFiles)" RootFolder="$(MSBuildProjectDirectory)">
-      <Output TaskParameter="AssignedFiles" ItemName="ContentWithTargetPath" />
-    </AssignTargetPath>
+  </Target>
 
+  <!-- Include the files from the output directory when other projects reference this -->
+  <Target Name="_CopyILFiles" BeforeTargets="GetCopyToOutputDirectoryItems">
     <ItemGroup>
-      <_TransitiveItemsToCopyToOutputDirectory Include="$(_IlFiles)" />
+      <_OutputIlFiles Include="@(_IlFiles)"
+                      TargetPath="%(Filename)%(Extension)"/>
+
+      <AllItemsFullPathWithTargetPath Include="@(_OutputIlFiles)">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AllItemsFullPathWithTargetPath>
     </ItemGroup>
-
-    <Message Text="sssssssssssssssssss @(_TransitiveItemsToCopyToOutputDirectory)" Importance="high"/>
-
   </Target>
 
 </Project>
