@@ -22,7 +22,7 @@ namespace MixedIL.Tests.Support
             TestResult = weavingTask.ExecuteTestRun(
                 FixtureHelper.IsolateAssembly<InvalidAssemblyToProcessReference>(),
                 false,
-                beforeExecuteCallback: AssemblyToProcessFixture.BeforeExecuteCallback
+                beforeExecuteCallback: FixtureHelper.BeforeExecuteCallback
             );
 
             using var assemblyResolver = new TestAssemblyResolver();

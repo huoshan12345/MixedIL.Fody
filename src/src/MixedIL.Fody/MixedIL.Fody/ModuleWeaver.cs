@@ -1,27 +1,20 @@
-﻿using Fody;
-using MixedIL.Fody.Processing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using Fody;
+using FodyTools;
+using MixedIL.Fody.Extensions;
+using MixedIL.Fody.Processing;
 using MixedIL.Fody.Support;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 
 namespace MixedIL.Fody
 {
-    public class ModuleWeaver : BaseModuleWeaver
+    public class ModuleWeaver : AbstractModuleWeaver
     {
-        internal const string TypeNotFoundFormat = "Cannot find type {0}";
-        internal const string MethodNotFoundFormat = "Cannot find method of {0} by name {1}";
-
-        private readonly Logger _log;
-
-        public ModuleWeaver()
-        {
-            _log = new Logger(this);
-        }
+        public const string TypeNotFoundFormat = "Cannot find type {0}";
+        public const string MethodNotFoundFormat = "Cannot find method in type {0} by name {1}";
 
         public override void Execute()
         {
@@ -37,8 +30,12 @@ namespace MixedIL.Fody
                 ReadWrite = false,
                 ReadSymbols = true,
             };
-
             using var iLModule = ModuleDefinition.ReadModule(iLFile.FullName, readerParameters);
+            
+            var codeImporter = new CodeImporter(ModuleDefinition)
+            {
+                ModuleResolver = new LocalReferenceModuleResolver(this, ReferenceCopyLocalPaths),
+            };
             var typeMethods = iLModule.GetTypes().ToDictionary(m => m.FullName, m => m.Methods.ToDictionary(x => x.FullName, x => x));
 
             foreach (var type in ModuleDefinition.GetTypes())
@@ -60,17 +57,17 @@ namespace MixedIL.Fody
                             throw new InvalidOperationException(string.Format(MethodNotFoundFormat, type.FullName, method.FullName));
                         }
 
-                        _log.Debug($"Processing: {method.FullName}");
-                        new MethodWeaver(method, iLMethod, _log).Process();
+                        WriteDebug($"Processing: {method.FullName}");
+                        new MethodWeaver(method, iLMethod, codeImporter).Process();
                     }
                     catch (WeavingException ex)
                     {
-                        AddError(ex.Message, ex.SequencePoint);
+                        WriteError(ex.Message, ex.SequencePoint);
                         break;
                     }
                     catch (Exception ex)
                     {
-                        AddError(ex.Message, method.GetSequencePoint());
+                        WriteError(ex.Message, method.GetSequencePoint());
                         break;
                     }
                 }
@@ -78,11 +75,6 @@ namespace MixedIL.Fody
         }
 
         public override IEnumerable<string> GetAssembliesForScanning() => Enumerable.Empty<string>();
-
-        protected virtual void AddError(string message, SequencePoint? sequencePoint)
-        {
-            _log.Error(message, sequencePoint);
-        }
 
         private FileInfo GetILFile()
         {

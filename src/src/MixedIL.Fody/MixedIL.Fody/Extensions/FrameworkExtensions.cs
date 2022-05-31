@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MixedIL.Fody.Extensions
 {
-    internal static class FrameworkExtensions
+    public static class FrameworkExtensions
     {
         public static void RemoveWhere<T>(this IList<T> list, Func<T, bool> predicate)
         {

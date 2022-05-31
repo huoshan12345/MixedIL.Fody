@@ -20,13 +20,7 @@
     <ProjectReference Include="..\MixedIL.Tests.SourceGenerator\MixedIL.Tests.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\MixedIL.Tests.AssemblyToProcess\MixedIL.Tests.AssemblyToProcess.csproj" />
     <ProjectReference Include="..\MixedIL.Tests.InvalidAssemblyToProcess\MixedIL.Tests.InvalidAssemblyToProcess.csproj" />
-    <ProjectReference Include="..\MixedIL.Tests.StandardAssemblyToProcess\MixedIL.Tests.StandardAssemblyToProcess.csproj">
-      <Aliases>standard</Aliases>
-    </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <ProjectReference Include="..\MixedIL.Tests.StandardAssemblyToProcess\MixedIL.Tests.StandardAssemblyToProcess.csproj" />
   </ItemGroup>
 
 </Project>

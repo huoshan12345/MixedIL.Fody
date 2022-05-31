@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
-
-#pragma warning disable 618
+using Fody;
+using MixedIL.Fody.Extensions;
+using Mono.Cecil;
 
 namespace MixedIL.Tests.Support
 {
-    internal static class FixtureHelper
+    public static class FixtureHelper
     {
         public static string IsolateAssembly<T>()
         {
@@ -58,5 +59,47 @@ namespace MixedIL.Tests.Support
             foreach (var dir in directoryInfo.GetDirectories())
                 dir.Delete(true);
         }
+
+        public static AssemblyFixture ProcessAssembly<T>()
+        {
+            var assemblyPath = IsolateAssembly<T>();
+
+            var weavingTask = new GuardedWeaver();
+
+            var testResult = weavingTask.ExecuteTestRun(
+                assemblyPath,
+                ignoreCodes: new[]
+                {
+                    "0x801312da" // VLDTR_E_MR_VARARGCALLINGCONV
+                },
+                writeSymbols: true,
+                beforeExecuteCallback: BeforeExecuteCallback,
+                runPeVerify: false
+            );
+
+            using var assemblyResolver = new TestAssemblyResolver();
+
+            var readerParams = new ReaderParameters(ReadingMode.Immediate)
+            {
+                ReadSymbols = true,
+                AssemblyResolver = assemblyResolver
+            };
+
+            var originalModule = ModuleDefinition.ReadModule(assemblyPath, readerParams);
+            var resultModule = ModuleDefinition.ReadModule(testResult.AssemblyPath, readerParams);
+
+            return new(testResult, originalModule, resultModule);
+        }
+
+        internal static void BeforeExecuteCallback(ModuleDefinition module)
+        {
+            // This reference is added by Fody, it's not supposed to be there
+            module.AssemblyReferences.RemoveWhere(i => string.Equals(i.Name, "System.Private.CoreLib", StringComparison.OrdinalIgnoreCase));
+        }
     }
+
+    public record AssemblyFixture(
+        TestResult TestResult,
+        ModuleDefinition OriginalModule,
+        ModuleDefinition ResultModule);
 }

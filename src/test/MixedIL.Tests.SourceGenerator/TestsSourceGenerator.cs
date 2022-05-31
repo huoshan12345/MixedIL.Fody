@@ -46,7 +46,7 @@ namespace MixedIL.Tests.SourceGenerator
 
         //By not inlining we make sure we can catch assembly loading errors when jitting this method
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void ExecuteInternal(GeneratorExecutionContext context)
+        private static void ExecuteInternal(GeneratorExecutionContext context)
         {
             var assemblySymbol = context.Compilation.SourceModule.ReferencedAssemblySymbols.FirstOrDefault(q => q.Name == AssemblyName);
             if (assemblySymbol == null)

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Fody;
+using FodyTools;
 using MixedIL.Fody.Extensions;
-using MixedIL.Fody.Support;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace MixedIL.Fody.Processing
 {
@@ -13,13 +14,13 @@ namespace MixedIL.Fody.Processing
 
         private readonly MethodDefinition _ilMethod;
         private readonly MethodDefinition _method;
-        private readonly MethodWeaverLogger _log;
+        private readonly CodeImporter _importer;
 
-        public MethodWeaver(MethodDefinition method, MethodDefinition ilMethod, ILogger log)
+        public MethodWeaver(MethodDefinition method, MethodDefinition ilMethod, CodeImporter importer)
         {
             _method = method;
             _ilMethod = ilMethod;
-            _log = new MethodWeaverLogger(log, _method);
+            _importer = importer;
         }
 
         public static bool NeedsProcessing(MethodDefinition method)
@@ -33,21 +34,12 @@ namespace MixedIL.Fody.Processing
             {
                 _method.CustomAttributes.RemoveWhere(m => m.AttributeType.FullName == AnchorAttributeName);
                 _method.Body.Instructions.Clear();
-                foreach (var instruction in _ilMethod.Body.Instructions)
-                {
-                    _method.Body.Instructions.Add(instruction);
-                }
-            }
-            catch (InstructionWeavingException ex)
-            {
-                throw new WeavingException(_log.QualifyMessage(ex.Message, ex.Instruction))
-                {
-                    SequencePoint = ex.Instruction.GetInputSequencePoint(_method)
-                };
+                _importer.ImportMethodBody(_ilMethod, _method);
+                _importer.ProcessDeferredActions();
             }
             catch (WeavingException ex)
             {
-                throw new WeavingException(_log.QualifyMessage(ex.Message))
+                throw new WeavingException(QualifyMessage(ex.Message))
                 {
                     SequencePoint = ex.SequencePoint
                 };
@@ -56,6 +48,14 @@ namespace MixedIL.Fody.Processing
             {
                 throw new InvalidOperationException($"Unexpected error occured while processing method {_method.FullName}: {ex.Message}", ex);
             }
+        }
+
+        private string QualifyMessage(string message)
+        {
+            if (message.Contains(_method.FullName))
+                return message;
+
+            return $"{message} (in {_method.FullName})";
         }
     }
 }

@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CFB3FFC9-C65
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.SourceGenerator", "test\MixedIL.Tests.SourceGenerator\MixedIL.Tests.SourceGenerator.csproj", "{FE747136-736B-4D37-A9FB-61F1B4872933}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Unsafe", "src\MixedIL.Unsafe\MixedIL.Unsafe.csproj", "{C75A354F-B4A5-40F1-ABFD-C05265AFB169}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{FE747136-736B-4D37-A9FB-61F1B4872933}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE747136-736B-4D37-A9FB-61F1B4872933}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE747136-736B-4D37-A9FB-61F1B4872933}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C75A354F-B4A5-40F1-ABFD-C05265AFB169}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C75A354F-B4A5-40F1-ABFD-C05265AFB169}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C75A354F-B4A5-40F1-ABFD-C05265AFB169}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C75A354F-B4A5-40F1-ABFD-C05265AFB169}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +104,7 @@ Global
 		{4D4F5599-CE46-4BD6-8880-4F715DAEF05A} = {0A4F85AF-2ADB-42EA-8A29-DDFABBE0FCCC}
 		{B8DC8D53-588F-4451-A676-23127D07ED20} = {0A4F85AF-2ADB-42EA-8A29-DDFABBE0FCCC}
 		{FE747136-736B-4D37-A9FB-61F1B4872933} = {0A4F85AF-2ADB-42EA-8A29-DDFABBE0FCCC}
+		{C75A354F-B4A5-40F1-ABFD-C05265AFB169} = {BBD57099-9025-40DB-9A1E-5094DE6736A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8580ABB-FF0F-45AA-B6DA-78D1AE90E5C6}

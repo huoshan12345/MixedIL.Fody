@@ -6,24 +6,26 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DisableFody>true</DisableFody>
+    <_RefProject>MixedIL.Tests.AssemblyToProcess</_RefProject>
+    <_RefProjectDir>..\$(_RefProject)\</_RefProjectDir>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\MixedIL.Tests.AssemblyToProcess\**\*.cs;" Exclude="..\MixedIL.Tests.AssemblyToProcess\obj\**;..\MixedIL.Tests.AssemblyToProcess\AssemblyToProcessReference.cs" Link="AssemblyToProcess\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(_RefProjectDir)**\*.cs;"
+             Exclude="$(_RefProjectDir)\Properties\**;$(_RefProjectDir)\obj\**;$(_RefProjectDir)\AssemblyToProcessReference.cs;$(_RefProjectDir)\UnsafeTests.cs"
+             Link="$(_RefProject)\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\MixedIL.Tests.AssemblyToProcess\**\*.il;" Exclude="..\MixedIL.Tests.AssemblyToProcess\obj\**;" Link="AssemblyToProcess\%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="$(_RefProjectDir)\**\*.il;"
+          Exclude="$(_RefProjectDir)\obj\**;"
+          Link="$(_RefProject)\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
   </ItemGroup>
 </Project>
 

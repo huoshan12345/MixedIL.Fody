@@ -2,42 +2,44 @@
 using System.IO;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
-using MixedIL.Fody;
 using MixedIL.Tests.Support;
 using Xunit;
+using System.Linq;
+using System.Reflection;
+using MixedIL.Fody;
+using Xunit.Sdk;
 
-namespace MixedIL.Tests
+namespace MixedIL.Tests;
+
+public class AssemblyTests
 {
-    public class AssemblyTests
+    [Fact(Skip = "Not valid for .net6.0")]
+    public void should_not_reference_value_tuple()
     {
-        [Fact(Skip = "Not valid for .net6.0")]
-        public void should_not_reference_value_tuple()
+        // System.ValueTuple may cause issues in some configurations, avoid using it.
+
+        using var fileStream = File.OpenRead(typeof(ModuleWeaver).Assembly.Location);
+        using var peReader = new PEReader(fileStream);
+        var metadataReader = peReader.GetMetadataReader();
+
+        foreach (var typeRefHandle in metadataReader.TypeReferences)
         {
-            // System.ValueTuple may cause issues in some configurations, avoid using it.
+            var typeRef = metadataReader.GetTypeReference(typeRefHandle);
 
-            using var fileStream = File.OpenRead(typeof(ModuleWeaver).Assembly.Location);
-            using var peReader = new PEReader(fileStream);
-            var metadataReader = peReader.GetMetadataReader();
+            var typeNamespace = metadataReader.GetString(typeRef.Namespace);
+            if (typeNamespace != typeof(ValueTuple).Namespace)
+                continue;
 
-            foreach (var typeRefHandle in metadataReader.TypeReferences)
-            {
-                var typeRef = metadataReader.GetTypeReference(typeRefHandle);
-
-                var typeNamespace = metadataReader.GetString(typeRef.Namespace);
-                if (typeNamespace != typeof(ValueTuple).Namespace)
-                    continue;
-
-                var typeName = metadataReader.GetString(typeRef.Name);
-                typeName.ShouldNotContain(nameof(ValueTuple));
-            }
+            var typeName = metadataReader.GetString(typeRef.Name);
+            typeName.ShouldNotContain(nameof(ValueTuple));
         }
+    }
 
-        [Fact]
-        public void should_not_add_reference_to_private_core_lib()
-        {
-            AssemblyToProcessFixture.ResultModule.AssemblyReferences.ShouldNotContain(i => i.Name == "System.Private.CoreLib");
-            StandardAssemblyToProcessFixture.ResultModule.AssemblyReferences.ShouldNotContain(i => i.Name == "System.Private.CoreLib");
-            InvalidAssemblyToProcessFixture.ResultModule.AssemblyReferences.ShouldNotContain(i => i.Name == "System.Private.CoreLib");
-        }
+    [Fact]
+    public void should_not_add_reference_to_private_core_lib()
+    {
+        AssemblyToProcessFixture.ResultModule.AssemblyReferences.ShouldNotContain(i => i.Name == "System.Private.CoreLib");
+        StandardAssemblyToProcessFixture.ResultModule.AssemblyReferences.ShouldNotContain(i => i.Name == "System.Private.CoreLib");
+        InvalidAssemblyToProcessFixture.ResultModule.AssemblyReferences.ShouldNotContain(i => i.Name == "System.Private.CoreLib");
     }
 }
