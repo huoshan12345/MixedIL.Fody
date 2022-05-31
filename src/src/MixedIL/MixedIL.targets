@@ -31,7 +31,7 @@
 
   <Target Name="InitializeIL" BeforeTargets="CoreCompile">
     <ItemGroup>
-      <_ILInNone Include="@(None)" Exclude="'%(Extension)' == '.il'" />
+      <_ILInNone Include="@(None)" Exclude="'%(Extension)' != '.il'" />
       <_IL Include="**\*.il" Exclude="**\obj\**\*.il;**\bin\**\*.il" />
       <_IL Include="@(_ILInNone)" />
     </ItemGroup>

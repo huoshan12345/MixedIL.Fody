@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.6.2" PrivateAssets="all" />
-    <PackageReference Include="MixedIL.Fody" Version="0.0.1" />
+    <PackageReference Include="MixedIL.Fody" Version="0.0.3" />
   </ItemGroup>
 
 </Project>

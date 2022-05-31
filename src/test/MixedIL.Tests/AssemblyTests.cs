@@ -10,7 +10,7 @@ namespace MixedIL.Tests
 {
     public class AssemblyTests
     {
-        [Fact]
+        [Fact(Skip = "Not valid for .net6.0")]
         public void should_not_reference_value_tuple()
         {
             // System.ValueTuple may cause issues in some configurations, avoid using it.
