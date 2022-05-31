@@ -8,7 +8,6 @@
     <Authors>huoshan12345</Authors>
     <IsPackable>true</IsPackable>
     <DebugType>embedded</DebugType>
-    <PackageId>MixedIL.Fody</PackageId>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Copyright>Copyright $([System.DateTime]::UtcNow.ToString(yyyy)).</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -16,8 +15,14 @@
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.6.2" PrivateAssets="none" />
     <PackageReference Include="FodyPackaging" Version="6.6.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" PrivateAssets="All" />
   </ItemGroup>
+
+  <ItemGroup Label="FilesToCopy">
+    <Content Include="MixedIL.targets" Pack="true" BuildAction="None" PackagePath="build\MixedIL.Fody.targets" />
+  </ItemGroup>
+
 </Project>

@@ -10,7 +10,7 @@ namespace MixedIL.Tests.Support
         public static string IsolateAssembly<T>()
         {
             var assembly = typeof(T).Assembly;
-            var assemblyPath = assembly.Location!;
+            var assemblyPath = assembly.Location;
             var assemblyDir = Path.GetDirectoryName(assemblyPath)!;
             var rootTestDir = Path.Combine(assemblyDir, "WeavingTest");
             var asmTestDir = Path.Combine(rootTestDir, Path.GetFileNameWithoutExtension(assemblyPath)!);

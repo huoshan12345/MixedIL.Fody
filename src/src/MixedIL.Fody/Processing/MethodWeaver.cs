@@ -31,7 +31,12 @@ namespace MixedIL.Fody.Processing
         {
             try
             {
-                ProcessImpl();
+                _method.CustomAttributes.RemoveWhere(m => m.AttributeType.FullName == AnchorAttributeName);
+                _method.Body.Instructions.Clear();
+                foreach (var instruction in _ilMethod.Body.Instructions)
+                {
+                    _method.Body.Instructions.Add(instruction);
+                }
             }
             catch (InstructionWeavingException ex)
             {
@@ -51,11 +56,6 @@ namespace MixedIL.Fody.Processing
             {
                 throw new InvalidOperationException($"Unexpected error occured while processing method {_method.FullName}: {ex.Message}", ex);
             }
-        }
-
-        private void ProcessImpl()
-        {
-            throw new NotImplementedException();
         }
     }
 }

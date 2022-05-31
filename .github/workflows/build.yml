@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Build
 on:
   push:
@@ -11,10 +12,10 @@ env:
   DOTNET_NOLOGO: 1
   SLN_PATH: src/MixedIL.Fody.sln
   VERSION: 0.0.1
+  NUGET_APIKEY: ${{ secrets.NUGET_APIKEY }}
 
 jobs:
   build-windows:
-    name: build-windows
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -25,28 +26,25 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: NuGet Restore
-        run: dotnet restore src/MixedIL.Fody.sln
-
-      - name: Build Debug
-        run: dotnet build -c Debug --no-restore ${{ env.SLN_PATH }}
-
-      - name: Build Release
-        run: dotnet build -c Release --no-restore ${{ env.SLN_PATH }}
-
       - name: Test Debug
-        run: dotnet test -c Debug --no-build ${{ env.SLN_PATH }}
+        run: |
+          ./build/test_all.ps1 Debug prod
 
       - name: Test Release
-        run: dotnet test -c Release --no-build ${{ env.SLN_PATH }}
+        run: |
+          ./build/test_all.ps1 Release prod
 
       - name: NuGet Publish
         if: ${{ github.ref == 'refs/heads/master' }}
+        shell: pwsh
         run: |
-          $dir = [IO.Path]::Combine(".", "output")
-          $path = [IO.Path]::Combine($dir, "*.nupkg")
-          dotnet pack -o $dir -c Release ${{ env.SLN_PATH }} -p:PackageVersion=${{ env.VERSION }} --no-restore
-          dotnet nuget push $path -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate --no-symbols true
+          ./build/pack.ps1
+
+      - name: Set variables
+        run: |
+          $ver = Get-Content -Path ./build/pkg.version
+          echo "VERSION=$ver" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          echo $ver
 
       - name: Create Tag
         if: ${{ github.ref == 'refs/heads/master' }}

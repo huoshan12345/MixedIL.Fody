@@ -1,16 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fody" Version="$(FodyVersion)" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" />
+    <PackageReference Include="Fody" Version="6.6.2" PrivateAssets="all" />
+    <PackageReference Include="MixedIL.Fody" Version="0.0.1" />
   </ItemGroup>
 
 </Project>
