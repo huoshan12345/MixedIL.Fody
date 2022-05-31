@@ -13,6 +13,9 @@ namespace MixedIL.Fody
 {
     public class ModuleWeaver : BaseModuleWeaver
     {
+        internal const string TypeNotFoundFormat = "Cannot find type {0}";
+        internal const string MethodNotFoundFormat = "Cannot find method of {0} by name {1}";
+
         private readonly Logger _log;
 
         public ModuleWeaver()
@@ -25,8 +28,7 @@ namespace MixedIL.Fody
             var iLFile = GetILFile();
             if (iLFile.Exists == false)
             {
-                _log.Info("There is no il dll.");
-                return;
+                throw new InvalidOperationException("Cannot find " + iLFile.FullName);
             }
 
             var readerParameters = new ReaderParameters
@@ -50,11 +52,12 @@ namespace MixedIL.Fody
 
                         if (!typeMethods.TryGetValue(type.FullName, out var methods))
                         {
-                            throw new InvalidOperationException($"Cannot find type in {iLFile.Name} by name {type.FullName}");
+                            throw new InvalidOperationException(string.Format(TypeNotFoundFormat, type.FullName));
                         }
+
                         if (!methods.TryGetValue(method.FullName, out var iLMethod))
                         {
-                            throw new InvalidOperationException($"Cannot find method of type {type.FullName} in {iLFile.Name} by name {method.FullName}");
+                            throw new InvalidOperationException(string.Format(MethodNotFoundFormat, type.FullName, method.FullName));
                         }
 
                         _log.Debug($"Processing: {method.FullName}");
@@ -63,6 +66,12 @@ namespace MixedIL.Fody
                     catch (WeavingException ex)
                     {
                         AddError(ex.Message, ex.SequencePoint);
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        AddError(ex.Message, method.GetSequencePoint());
+                        break;
                     }
                 }
             }
@@ -71,7 +80,9 @@ namespace MixedIL.Fody
         public override IEnumerable<string> GetAssembliesForScanning() => Enumerable.Empty<string>();
 
         protected virtual void AddError(string message, SequencePoint? sequencePoint)
-            => _log.Error(message, sequencePoint);
+        {
+            _log.Error(message, sequencePoint);
+        }
 
         private FileInfo GetILFile()
         {

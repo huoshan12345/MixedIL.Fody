@@ -21,5 +21,11 @@ namespace MixedIL.Tests.Weaving
 
         protected string ShouldHaveError(string methodName)
             => InvalidAssemblyToProcessFixture.ShouldHaveError($"{InvalidAssembly}.{ClassName}", methodName, true);
+
+        protected string CannotFindType()
+            => InvalidAssemblyToProcessFixture.CannotFindType(ClassName);
+
+        protected string CannotFindMethod(string methodName)
+            => InvalidAssemblyToProcessFixture.CannotFindMethod(ClassName, methodName);
     }
 }

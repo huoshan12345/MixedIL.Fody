@@ -31,9 +31,25 @@
 
   <Target Name="InitializeIL" BeforeTargets="CoreCompile">
     <ItemGroup>
-      <_ILInNone Include="@(None)" Exclude="'%(Extension)' != '.il'" />
+      <_ILInNone Include="@(None)" Condition="'%(Extension)' == '.il'" />
       <_IL Include="**\*.il" Exclude="**\obj\**\*.il;**\bin\**\*.il" />
       <_IL Include="@(_ILInNone)" />
+    </ItemGroup>
+
+    <CallTarget Targets="CreateEmptyIL" Condition="@(_IL->Count()) == 0"/>
+  </Target>
+
+  <Target Name="CreateEmptyIL">
+    <PropertyGroup>
+      <_EmptyIlFile>$(IntermediateOutputPath)_empty.il</_EmptyIlFile>
+      <_EmptyILContent><![CDATA[.assembly extern mscorlib {}]]></_EmptyILContent>
+    </PropertyGroup>
+    <WriteLinesToFile
+      File="$(_EmptyIlFile)"
+      Lines="$(_EmptyILContent)"
+      Overwrite="true"/>
+    <ItemGroup>
+      <_IL Include="$(_EmptyIlFile)" />
     </ItemGroup>
   </Target>
 

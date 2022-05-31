@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Fody;
 using MixedIL.Fody;
 using MixedIL.Tests.InvalidAssemblyToProcess;
@@ -38,6 +39,22 @@ namespace MixedIL.Tests.Support
                                                     binder: null,
                                                     target: null,
                                                     args: null)!;
+        }
+
+        public static string CannotFindType(string type)
+        {
+            var error = string.Format(ModuleWeaver.TypeNotFoundFormat, type);
+            var errorMessage = TestResult.Errors.SingleOrDefault(err => err.Text.Contains(error));
+            errorMessage.ShouldNotBeNull();
+            return errorMessage!.Text;
+        }
+
+        public static string CannotFindMethod(string type, string method)
+        {
+            var error = string.Format(ModuleWeaver.MethodNotFoundFormat, type, method);
+            var errorMessage = TestResult.Errors.SingleOrDefault(err => err.Text.Contains(error));
+            errorMessage.ShouldNotBeNull();
+            return errorMessage!.Text;
         }
 
         public static string ShouldHaveError(string className, string methodName, bool sequencePointRequired)
