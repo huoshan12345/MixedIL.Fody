@@ -1,0 +1,12 @@
+<Project>
+
+  <PropertyGroup>
+    <_WeaverName>MixedIL.Fody</_WeaverName>
+  </PropertyGroup>
+
+  <Import Project="$(MsBuildThisFileDirectory)MixedIL\MixedIL.targets" />
+  <ItemGroup>
+    <WeaverFiles Include="$(MsBuildThisFileDirectory)$(_WeaverName)\bin\$(Configuration)\netstandard2.0\$(_WeaverName).dll" />
+  </ItemGroup>
+
+</Project>

@@ -42,7 +42,7 @@
   <Target Name="CreateEmptyIL">
     <PropertyGroup>
       <_EmptyIlFile>$(IntermediateOutputPath)_empty.il</_EmptyIlFile>
-      <_EmptyILContent><![CDATA[.assembly extern mscorlib {}]]></_EmptyILContent>
+      <_EmptyILContent>.assembly extern mscorlib {}</_EmptyILContent>
     </PropertyGroup>
     <WriteLinesToFile
       File="$(_EmptyIlFile)"
@@ -86,6 +86,8 @@
     </ItemGroup>
 
     <Copy SourceFiles="@(_IlFiles)" DestinationFolder="$(OutDir)"/>
+
+    <Message Importance="High" Text="$(ProjectWeaverXml)" />
 
   </Target>
 

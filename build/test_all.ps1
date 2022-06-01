@@ -5,7 +5,17 @@ $mode = if ($args[0] -eq 'Release') { "Release" } else { "Debug" }
 Write-Output "mode = $mode"
 
 $root = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$slnPath = [io.path]::combine($root, "..")
-$path = [io.path]::combine($slnPath, "src/test/MixedIL.Tests")
+$testDir = [io.path]::combine($root, "..\src\test\")
 
-& dotnet test $path --nologo -v q -c $mode
+$projects = (
+  "MixedIL.Tests",
+  "MixedIL.Unsafe.Tests"
+)
+
+foreach ($project in $projects) {
+  $path = [io.path]::combine($testDir, $project)
+  & dotnet test $path --nologo -v q -c $mode
+  if ($Lastexitcode -ne 0) {
+    throw "failed with exit code $LastExitCode"
+  }
+}

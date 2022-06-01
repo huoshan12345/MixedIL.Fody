@@ -13,13 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\MixedIL\MixedIL.csproj" PrivateAssets="all" />
   </ItemGroup>
 
-  <Import Project="..\MixedIL\MixedIL.targets" />
-  <ItemGroup>
-    <WeaverFiles Include="$(SolutionDir)src\$(SolutionName)\bin\$(Configuration)\netstandard2.0\$(SolutionName).dll" />
-  </ItemGroup>
+  <Import Project="..\LocalWeaver.props" />
 
   <ItemGroup>
     <Compile Include="..\..\src\MixedIL.Unsafe\MixedIL\*.cs;" Link="MixedIL.Unsafe\%(RecursiveDir)%(Filename)%(Extension)" />

@@ -15,9 +15,4 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\src\MixedIL.Unsafe\MixedIL\*.cs;" Link="MixedIL.Unsafe\%(RecursiveDir)%(Filename)%(Extension)" />
-    <None Include="..\..\src\MixedIL.Unsafe\MixedIL\*.il;" Link="MixedIL.Unsafe\%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
-
 </Project>

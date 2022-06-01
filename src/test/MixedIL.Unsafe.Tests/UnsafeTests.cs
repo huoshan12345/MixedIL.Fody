@@ -1,14 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Xunit;
-// ReSharper disable once RedundantUsingDirective
-using Unsafe = MixedIL.Unsafe;
 
-namespace MixedIL.Tests.AssemblyToProcess;
+namespace MixedIL.Tests;
 
 public class UnsafeTests
 {
@@ -160,7 +157,7 @@ public class UnsafeTests
     }
 
     [Fact]
-    public unsafe void SizeOf()
+    public void SizeOf()
     {
         Assert.Equal(1, Unsafe.SizeOf<sbyte>());
         Assert.Equal(1, Unsafe.SizeOf<byte>());
@@ -279,7 +276,7 @@ public class UnsafeTests
         }
     }
 
-    public IEnumerable<object[]> InitBlockData()
+    public static IEnumerable<object[]> InitBlockData()
     {
         yield return new object[] { 0, 1 };
         yield return new object[] { 1, 1 };
@@ -385,7 +382,7 @@ public class UnsafeTests
         }
     }
 
-    public IEnumerable<object[]> CopyBlockData()
+    public static IEnumerable<object[]> CopyBlockData()
     {
         yield return new object[] { 0 };
         yield return new object[] { 1 };
@@ -712,7 +709,7 @@ public class UnsafeTests
     }
 
     [Fact]
-    public unsafe void ReadUnaligned_ByRef_Int32()
+    public void ReadUnaligned_ByRef_Int32()
     {
         byte[] unaligned = Int32Double.Unaligned(123456789, 3.42);
 
@@ -722,7 +719,7 @@ public class UnsafeTests
     }
 
     [Fact]
-    public unsafe void ReadUnaligned_ByRef_Double()
+    public void ReadUnaligned_ByRef_Double()
     {
         byte[] unaligned = Int32Double.Unaligned(123456789, 3.42);
 
@@ -732,7 +729,7 @@ public class UnsafeTests
     }
 
     [Fact]
-    public unsafe void ReadUnaligned_ByRef_Struct()
+    public void ReadUnaligned_ByRef_Struct()
     {
         byte[] unaligned = Int32Double.Unaligned(123456789, 3.42);
 
@@ -1114,6 +1111,7 @@ public struct Byte4Short2
     public short S6;
 }
 
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public unsafe struct Byte512
 {
     public fixed byte Bytes[512];
