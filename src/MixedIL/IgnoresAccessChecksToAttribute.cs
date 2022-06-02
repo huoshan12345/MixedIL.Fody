@@ -7,7 +7,6 @@ namespace System.Runtime.CompilerServices;
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true, Inherited = false)]
 public sealed class IgnoresAccessChecksToAttribute : Attribute
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="IgnoresAccessChecksToAttribute" /> class with the name of the specified assembly.
     /// </summary>

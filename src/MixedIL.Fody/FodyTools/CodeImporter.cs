@@ -1,6 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-// ReSharper disable once CheckNamespace
-namespace FodyTools
+﻿namespace FodyTools
 {
     using System;
     using System.Collections.Generic;

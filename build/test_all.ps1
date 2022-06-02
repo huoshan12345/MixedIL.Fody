@@ -5,7 +5,7 @@ $mode = if ($args[0] -eq 'Release') { "Release" } else { "Debug" }
 Write-Output "mode = $mode"
 
 $root = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$testDir = [io.path]::combine($root, "..\src\test\")
+$testDir = [io.path]::combine($root, "..\test")
 
 $projects = (
   "MixedIL.Tests",

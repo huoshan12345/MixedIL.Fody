@@ -14,7 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{0A4F85AF-2
 	ProjectSection(SolutionItems) = preProject
 		test\CopyILFile.targets = test\CopyILFile.targets
 		test\Directory.Build.props = test\Directory.Build.props
-		test\Directory.Build.targets = test\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests", "test\MixedIL.Tests\MixedIL.Tests.csproj", "{B2678B5D-D3D9-455F-9FD3-1241A231BE84}"
@@ -23,12 +22,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.AssemblyToPro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{41D4FE14-0B62-4A04-862B-D4482AAFCD18}"
 	ProjectSection(SolutionItems) = preProject
-		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
-		..\build\incre_ver.ps1 = ..\build\incre_ver.ps1
-		..\build\pack.ps1 = ..\build\pack.ps1
-		..\build\pkg.version = ..\build\pkg.version
-		..\README.md = ..\README.md
-		..\build\test_all.ps1 = ..\build\test_all.ps1
+		.github\workflows\build.yml = .github\workflows\build.yml
+		build\incre_ver.ps1 = build\incre_ver.ps1
+		NuGet.config = NuGet.config
+		build\pack.ps1 = build\pack.ps1
+		build\pkg.version = build\pkg.version
+		README.md = README.md
+		build\test_all.ps1 = build\test_all.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{BBD57099-9025-40DB-9A1E-5094DE6736A9}"
@@ -42,7 +42,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CFB3FFC9-C653-4830-A696-CE150BECC295}"
 	ProjectSection(SolutionItems) = preProject
 		src\Directory.Build.props = src\Directory.Build.props
-		src\Directory.Build.targets = src\Directory.Build.targets
 		src\LocalWeaver.props = src\LocalWeaver.props
 	EndProjectSection
 EndProject
