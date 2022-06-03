@@ -11,7 +11,7 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Example](#examples)
-- [Compare with InlineIL.Fody](#compare-with-inlineilfody)
+- [Comparison with InlineIL.Fody](#comparison-with-inlineilfody)
 
 ---
 
@@ -85,7 +85,7 @@ public class ObjectHelper
 
 ---
 
-## Compare with InlineIL.Fody
+## Comparison with InlineIL.Fody
 
 [InlineIL.Fody](https://github.com/ltrzesniewski/InlineIL.Fody) is a remarkable fody add-in which lets you inject IL instructions by calling normal static C# methods. While there are some differences, so you can choose based on your requirement.
 
