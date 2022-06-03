@@ -6,8 +6,8 @@ using Fody;
 using FodyTools;
 using MixedIL.Fody.Extensions;
 using MixedIL.Fody.Processing;
-using MixedIL.Fody.Support;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace MixedIL.Fody
 {
@@ -31,7 +31,7 @@ namespace MixedIL.Fody
                 ReadSymbols = true,
             };
             using var iLModule = ModuleDefinition.ReadModule(iLFile.FullName, readerParameters);
-            
+
             var codeImporter = new CodeImporter(ModuleDefinition)
             {
                 ModuleResolver = new LocalReferenceModuleResolver(this, ReferenceCopyLocalPaths),
@@ -72,6 +72,8 @@ namespace MixedIL.Fody
                     }
                 }
             }
+
+            RemoveLibReference();
         }
 
         public override IEnumerable<string> GetAssembliesForScanning() => Enumerable.Empty<string>();
@@ -79,9 +81,62 @@ namespace MixedIL.Fody
         private FileInfo GetILFile()
         {
             var fileInfo = new FileInfo(ModuleDefinition.FileName);
-            var (name, _) = PathHelper.ExtractFileName(fileInfo.Name);
+            var name = Path.GetFileNameWithoutExtension(fileInfo.Name);
             var il = name + ".il.dll";
             return new FileInfo(Path.Combine(fileInfo.DirectoryName!, il));
+        }
+
+        private void RemoveLibReference()
+        {
+            var libRef = ModuleDefinition.AssemblyReferences.FirstOrDefault(r => IsMixedILAssembly(r));
+            if (libRef == null)
+                return;
+
+            var importScopes = new HashSet<ImportDebugInformation>();
+
+            foreach (var method in ModuleDefinition.GetTypes().SelectMany(t => t.Methods))
+            {
+                foreach (var scope in method.DebugInformation.GetScopes())
+                    ProcessScope(scope);
+            }
+
+            ModuleDefinition.AssemblyReferences.Remove(libRef);
+
+            var copyLocalFilesToRemove = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                libRef.Name + ".dll",
+                libRef.Name + ".xml",
+                libRef.Name + ".pdb" // We don't ship this, but future-proof that ;)
+            };
+
+            ReferenceCopyLocalPaths.RemoveAll(i => copyLocalFilesToRemove.Contains(Path.GetFileName(i)));
+
+            WriteDebug("Removed reference to InlineIL");
+
+            void ProcessScope(ScopeDebugInformation scope)
+            {
+                ProcessImportScope(scope.Import);
+
+                if (scope.HasScopes)
+                {
+                    foreach (var childScope in scope.Scopes)
+                        ProcessScope(childScope);
+                }
+            }
+
+            void ProcessImportScope(ImportDebugInformation? importScope)
+            {
+                if (importScope == null || !importScopes.Add(importScope))
+                    return;
+
+                importScope.Targets.RemoveWhere(t => IsMixedILAssembly(t.AssemblyReference));
+                ProcessImportScope(importScope.Parent);
+            }
+
+            static bool IsMixedILAssembly(AssemblyNameReference? assembly)
+            {
+                return assembly?.Name == "MixedIL";
+            }
         }
     }
 }

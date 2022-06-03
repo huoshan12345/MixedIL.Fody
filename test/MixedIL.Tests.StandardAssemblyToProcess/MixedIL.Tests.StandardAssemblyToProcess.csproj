@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\src\MixedIL\MixedIL.targets" />
+  <Import Project="..\..\src\LocalInclude.props" />
   <Import Project="..\CopyILFile.targets" />
 
   <PropertyGroup>

@@ -1,0 +1,7 @@
+<Project>
+  <ItemGroup>
+    <Compile Condition="'$(ProjectExt)' == '.csproj'"
+             Include="..\..\src\MixedIL\System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.cs"
+             Link="MixedIL\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

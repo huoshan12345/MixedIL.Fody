@@ -4,16 +4,13 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using MixedIL.Tests.Support;
 using Xunit;
-using System.Linq;
-using System.Reflection;
 using MixedIL.Fody;
-using Xunit.Sdk;
 
 namespace MixedIL.Tests;
 
 public class AssemblyTests
 {
-    [Fact(Skip = "Not valid for .net6.0")]
+    [Fact]
     public void should_not_reference_value_tuple()
     {
         // System.ValueTuple may cause issues in some configurations, avoid using it.

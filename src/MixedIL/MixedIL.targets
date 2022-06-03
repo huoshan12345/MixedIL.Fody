@@ -85,10 +85,6 @@
       <_IlFiles Include="$(_PdbFile)" />
     </ItemGroup>
 
-    <Copy SourceFiles="@(_IlFiles)" DestinationFolder="$(OutDir)"/>
-
-    <Message Importance="High" Text="$(ProjectWeaverXml)" />
-
   </Target>
 
 </Project>

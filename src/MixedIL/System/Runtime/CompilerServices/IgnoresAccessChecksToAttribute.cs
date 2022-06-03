@@ -1,11 +1,11 @@
-﻿// ReSharper disable once CheckNamespace
+﻿// ReSharper disable UnusedType.Global
 namespace System.Runtime.CompilerServices;
 
 /// <summary>
 /// Allows the current assembly to access the internal types of a specified assembly that are ordinarily invisible.
 /// </summary>
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true, Inherited = false)]
-public sealed class IgnoresAccessChecksToAttribute : Attribute
+internal sealed class IgnoresAccessChecksToAttribute : Attribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="IgnoresAccessChecksToAttribute" /> class with the name of the specified assembly.

@@ -4,7 +4,7 @@
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace></RootNamespace>
+    <RootNamespace />
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,8 +15,20 @@
     <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\MixedIL\MixedIL.csproj" PrivateAssets="all" />
   </ItemGroup>
-
+  
   <Import Project="..\LocalWeaver.props" />
-  <Import Project="..\LocalInclude.props" />
+
+  <ItemGroup>
+    <Compile Include="..\..\src\MixedIL\System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.fs"
+             Link="MixedIL\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="System\ObjectExtensions.fs" />
+    <Compile Include="System\ObjectHelper.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\MixedIL.Example\System\*.il;" Link="System\%(Filename)%(Extension)" />
+  </ItemGroup>
+
 
 </Project>

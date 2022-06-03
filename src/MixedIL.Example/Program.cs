@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using MixedIL;
 
 internal class Program
@@ -9,8 +10,10 @@ internal class Program
         var same = ObjectHelper.AreSame(ref i, ref i);
         Console.WriteLine("ObjectHelper.AreSame:" + same);
 
-        var size = Unsafe.SizeOf<int>();
-        Console.WriteLine("Unsafe.SizeOf<int>:" + size);
+
+        var attr = new AssemblyKeyNameAttribute(nameof(Main));
+        attr.SetKeyName(typeof(Program).Assembly.GetName().Name!);
+        Console.WriteLine(attr.KeyName);
 
         Console.Read();
     }

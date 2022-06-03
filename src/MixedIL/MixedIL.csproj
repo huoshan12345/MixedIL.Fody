@@ -11,6 +11,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Copyright>Copyright $([System.DateTime]::UtcNow.ToString(yyyy)).</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.6.2" PrivateAssets="none" />
@@ -22,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup Label="FilesToCopy">
+    <None Include="System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.cs" Pack="true" BuildAction="None" PackagePath="content\" />
+    <Content Include="System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.cs" Pack="true" BuildAction="None" PackagePath="content\" />
     <Content Include="MixedIL.targets" Pack="true" BuildAction="None" PackagePath="build\MixedIL.Fody.targets" />
   </ItemGroup>
 
