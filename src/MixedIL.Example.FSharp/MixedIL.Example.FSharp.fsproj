@@ -17,10 +17,9 @@
   </ItemGroup>
   
   <Import Project="..\LocalWeaver.props" />
-
+  <Import Project="..\LocalInclude.props" />
   <ItemGroup>
-    <Compile Include="..\..\src\MixedIL\System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.fs"
-             Link="MixedIL\%(RecursiveDir)%(Filename)%(Extension)" />
+
     <Compile Include="System\ObjectExtensions.fs" />
     <Compile Include="System\ObjectHelper.fs" />
     <Compile Include="Program.fs" />

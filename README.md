@@ -16,13 +16,13 @@
 ---
 
 ## Installation
+- Include the [`Fody`](https://www.nuget.org/packages/Fody) and [`MixedIL.Fody`](https://www.nuget.org/packages/MixedIL.Fody) NuGet packages with a `PrivateAssets="all"` attribute on their `<PackageReference />` items. Installing `Fody` explicitly is needed to enable weaving.
 
-- Install the NuGet packages [`Fody`](https://www.nuget.org/packages/Fody) and [`MixedIL.Fody`](https://www.nuget.org/packages/MixedIL.Fody). Installing `Fody` explicitly is needed to enable weaving.
+  ```XML
+  <PackageReference Include="Fody" Version="..." PrivateAssets="all" />
+  <PackageReference Include="MixedIL.Fody" Version="..." PrivateAssets="all" />
+  ```
 
-  ```
-  PM> Install-Package Fody
-  PM> Install-Package MixedIL.Fody
-  ```
 
 - If you already have a `FodyWeavers.xml` file in the root directory of your project, add the `<MixedIL />` tag there. This file will be created on the first build if it doesn't exist:
 
