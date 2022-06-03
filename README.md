@@ -42,6 +42,10 @@
 1. Write a method stub in a C# project with keyword `extern` and an attribute provided in `MixedIL` called `MixedILAttribute`
 
 ```
+using MixedIL;
+
+namespace System;
+
 public class ObjectHelper
 {
     [MixedIL]
