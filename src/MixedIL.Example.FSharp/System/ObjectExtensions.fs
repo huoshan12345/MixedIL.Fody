@@ -8,4 +8,5 @@ open System.Reflection
 type ObjectExtensions =
     [<MixedIL>]
     [<Extension>]
-    static member SetKeyName(attribute:AssemblyKeyNameAttribute, keyName:string): unit = raise (NotImplementedException())
+    static member SetKeyName(attribute: AssemblyKeyNameAttribute, keyName: string) : unit =
+        raise (NotImplementedException())

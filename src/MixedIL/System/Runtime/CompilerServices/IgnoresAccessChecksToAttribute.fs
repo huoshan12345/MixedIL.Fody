@@ -1,4 +1,5 @@
 ﻿namespace System.Runtime.CompilerServices
+
 open System
 
 /// <summary>
@@ -6,5 +7,5 @@ open System
 /// </summary>
 [<AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true, Inherited = false)>]
 type internal IgnoresAccessChecksToAttribute(assemblyName: string) =
-    inherit System.Attribute()
-    member val AssemblyName: string = assemblyName with get
+    inherit Attribute()
+    member val AssemblyName: string = assemblyName
