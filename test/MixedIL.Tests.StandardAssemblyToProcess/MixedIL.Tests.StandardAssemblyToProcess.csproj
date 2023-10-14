@@ -12,20 +12,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="$(_RefProjectDir)**\*.cs;"
-             Exclude="$(_RefProjectDir)\Properties\**;$(_RefProjectDir)\obj\**;$(_RefProjectDir)\AssemblyToProcessReference.cs;$(_RefProjectDir)\UnsafeTests.cs"
-             Link="$(_RefProject)\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(_RefProjectDir)**\*.cs;" Exclude="$(_RefProjectDir)\Properties\**;$(_RefProjectDir)\obj\**;$(_RefProjectDir)\AssemblyToProcessReference.cs;$(_RefProjectDir)\UnsafeTests.cs" Link="$(_RefProject)\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(_RefProjectDir)\**\*.il;"
-          Exclude="$(_RefProjectDir)\obj\**;"
-          Link="$(_RefProject)\%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="$(_RefProjectDir)\**\*.il;" Exclude="$(_RefProjectDir)\obj\**;" Link="$(_RefProject)\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
-    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit" Version="2.5.2" />
   </ItemGroup>
 </Project>
 
