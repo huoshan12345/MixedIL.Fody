@@ -12,6 +12,15 @@
         ret
     }
 
+    .method public hidebysig static void SetKeyNameNet4(class [mscorlib]System.Reflection.AssemblyKeyNameAttribute attribute, string keyName) cil managed
+    {
+        .maxstack 8
+        ldarg.0
+        ldarg.1
+        stfld string [mscorlib]System.Reflection.AssemblyKeyNameAttribute::'m_keyName'
+        ret
+    }
+
     .method public hidebysig static void SetValue(class [MixedIL.Tests.AssemblyToProcess]System.TestObject testObject, int32 'value') cil managed
     {
         .maxstack 8
