@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludeReferences</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
   <Target Name="IncludeReferences">
