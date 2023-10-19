@@ -11,7 +11,15 @@ public class ObjectExtensionsTests
     {
         var attr = new AssemblyKeyNameAttribute("");
         const string name = nameof(AssemblyKeyNameAttribute);
-        attr.SetKeyName(name);
+        if (Environment.Version.Major <= 4)
+        {
+            attr.SetKeyNameNet4(name);
+        }
+        else
+        {
+            attr.SetKeyName(name);
+        }
+
         Assert.Equal(name, attr.KeyName);
     }
 

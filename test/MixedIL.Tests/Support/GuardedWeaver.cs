@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using MixedIL.Fody;
 using Mono.Cecil.Cil;
@@ -27,7 +26,7 @@ internal class GuardedWeaver : ModuleWeaver
         }
     }
 
-    public override void WriteError(string message, SequencePoint? sequencePoint)
+    protected override void AddError(string message, SequencePoint? sequencePoint)
     {
         _errors.Add(message);
         base.WriteError(message, sequencePoint);

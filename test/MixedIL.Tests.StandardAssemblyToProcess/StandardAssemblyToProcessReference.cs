@@ -1,6 +1,5 @@
-namespace MixedIL.Tests.StandardAssemblyToProcess
+namespace MixedIL.Tests.StandardAssemblyToProcess;
+
+public abstract class StandardAssemblyToProcessReference
 {
-    public abstract class StandardAssemblyToProcessReference
-    {
-    }
 }

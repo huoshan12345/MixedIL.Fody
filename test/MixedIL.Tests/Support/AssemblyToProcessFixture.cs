@@ -1,7 +1,5 @@
-﻿using Fody;
-using MixedIL.Tests.AssemblyToProcess;
+﻿using MixedIL.Tests.AssemblyToProcess;
 using MixedIL.Tests.StandardAssemblyToProcess;
-using Mono.Cecil;
 
 namespace MixedIL.Tests.Support;
 
