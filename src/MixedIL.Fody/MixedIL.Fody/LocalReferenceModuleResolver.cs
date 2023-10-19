@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using FodyTools;
-using Mono.Cecil;
+﻿using FodyTools;
+using MoreFodyHelpers;
 
 namespace MixedIL.Fody;
 
 internal class LocalReferenceModuleResolver : IModuleResolver
 {
-    private readonly ILogger _logger;
+    private readonly IWeaverLogger _logger;
     private readonly HashSet<string> _referencePaths;
     private readonly HashSet<string> _ignoredAssemblyNames = new();
 
-    public LocalReferenceModuleResolver(ILogger logger, IEnumerable<string> referencePaths)
+    public LocalReferenceModuleResolver(IWeaverLogger logger, IEnumerable<string> referencePaths)
     {
         _logger = logger;
 
@@ -28,12 +26,12 @@ internal class LocalReferenceModuleResolver : IModuleResolver
         {
             if (_referencePaths.Contains(module.FileName))
             {
-                _logger.LogInfo($"Merge types from assembly {assemblyName}.");
+                _logger.Info($"Merge types from assembly {assemblyName}.");
                 return module;
             }
             else
             {
-                _logger.LogInfo($"Exclude assembly {assemblyName} because its not in the local references list.");
+                _logger.Info($"Exclude assembly {assemblyName} because its not in the local references list.");
             }
         }
 

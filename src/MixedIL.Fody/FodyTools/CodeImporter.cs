@@ -1,10 +1,13 @@
-﻿namespace FodyTools
+﻿// ReSharper disable All
+namespace FodyTools
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
+    using System.IO;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
 
     using Mono.Cecil;
@@ -18,11 +21,11 @@
     /// </remarks>
     internal sealed class CodeImporter
     {
-        private static readonly ConstructorInfo _instructionConstructor = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null)!;
-        private readonly Dictionary<string, ModuleDefinition> _sourceModuleDefinitions = new();
-        private readonly Dictionary<TypeDefinition, TypeDefinition> _targetTypesBySource = new();
-        private readonly HashSet<TypeDefinition> _targetTypes = new();
-        private readonly Dictionary<MethodDefinition, MethodDefinition> _targetMethods = new();
+        private static readonly ConstructorInfo _instructionConstructor = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
+        private readonly Dictionary<string, ModuleDefinition> _sourceModuleDefinitions = new Dictionary<string, ModuleDefinition>();
+        private readonly Dictionary<TypeDefinition, TypeDefinition> _targetTypesBySource = new Dictionary<TypeDefinition, TypeDefinition>();
+        private readonly HashSet<TypeDefinition> _targetTypes = new HashSet<TypeDefinition>();
+        private readonly Dictionary<MethodDefinition, MethodDefinition> _targetMethods = new Dictionary<MethodDefinition, MethodDefinition>();
         private readonly IList<Action> _deferredActions = new List<Action>();
         private readonly Dictionary<string, TypeDefinition> _targetTypesByFullName;
 
@@ -49,7 +52,181 @@
         public Func<string, string> NamespaceDecorator { get; set; } = value => value;
         public bool HideImportedTypes { get; set; } = true;
         public bool CompactMode { get; set; } = true;
-        public readonly Func<MethodDefinition, bool> DeferMethodImportCallback = DefaultCanDeferMethodImport;
+        public Func<MethodDefinition, bool> DeferMethodImportCallback = DefaultCanDeferMethodImport;
+
+        /// <summary>
+        /// Imports the specified type and it's local references from it's source module into the target module.
+        /// </summary>
+        /// <param name="type">The type to import.</param>
+        /// <returns>
+        /// The type definition of the imported type in the target module.
+        /// </returns>
+        public TypeDefinition Import(Type type)
+        {
+            return ImportType(type);
+        }
+
+        /// <summary>
+        /// Imports the specified type and it's local references from it's source module into the target module.
+        /// </summary>
+        /// <typeparam name="T">The type to import.</typeparam>
+        /// <returns>
+        /// The type definition of the imported type in the target module.
+        /// </returns>
+        public TypeDefinition Import<T>()
+        {
+            return Import(typeof(T));
+        }
+
+        public TypeDefinition Import(TypeDefinition sourceType)
+        {
+            RegisterSourceModule(sourceType.Module);
+
+            return ProcessDeferredActions(ImportTypeDefinition(sourceType));
+        }
+
+        public GenericInstanceMethod Import(GenericInstanceMethod method)
+        {
+            return ProcessDeferredActions(ImportGenericInstanceMethod(method));
+        }
+
+        /// <summary>
+        /// Imports the methods declaring type into the target module and returns the method definition
+        /// of the corresponding method in the target module.
+        /// </summary>
+        /// <typeparam name="T">The methods return value.</typeparam>
+        /// <param name="expression">The method call expression describing the source method.</param>
+        /// <returns>The method definition of the imported method.</returns>
+        /// <exception cref="ArgumentException">Only method call expression is supported. - expression</exception>
+        /// <exception cref="InvalidOperationException">Importing method failed.</exception>
+        public MethodDefinition ImportMethod<T>(Expression<Func<T>> expression)
+        {
+            return ImportMethodInternal(expression);
+        }
+
+        /// <summary>
+        /// Imports the methods declaring type into the target module and returns the method definition
+        /// of the corresponding method in the target module.
+        /// </summary>
+        /// <param name="expression">The method call expression describing the source method.</param>
+        /// <returns>The method definition of the imported method.</returns>
+        /// <exception cref="ArgumentException">Only method call expression is supported. - expression</exception>
+        /// <exception cref="InvalidOperationException">Importing method failed.</exception>
+        public MethodDefinition ImportMethod(Expression<Action> expression)
+        {
+            return ImportMethodInternal(expression);
+        }
+
+        private MethodDefinition ImportMethodInternal(LambdaExpression expression)
+        {
+            expression.GetMethodInfo(out var declaringType, out var methodName, out var argumentTypes);
+
+            var targetType = Import(declaringType);
+
+            return targetType.Methods.Single(m => m.Name == methodName && m.Parameters.ParametersMatch(argumentTypes)) ?? throw new InvalidOperationException("Importing method failed.");
+        }
+
+        /// <summary>
+        /// Imports the property's declaring type into the target module and returns the property definition
+        /// of the corresponding property in the target module.
+        /// </summary>
+        /// <typeparam name="T">The property type of the property</typeparam>
+        /// <param name="expression">The property expression describing the source property.</param>
+        /// <returns>The property definition of the imported property</returns>
+        /// <exception cref="ArgumentException">
+        /// Only a member expression is supported here. - expression
+        /// or
+        /// Only a property expression is supported here. - expression
+        /// </exception>
+        public PropertyDefinition ImportProperty<T>(Expression<Func<T>> expression)
+        {
+            if (!(expression.Body is MemberExpression memberExpression))
+                throw new ArgumentException("Only a member expression is supported here.", nameof(expression));
+
+            var member = memberExpression.Member;
+            if (!(member is PropertyInfo))
+                throw new ArgumentException("Only a property expression is supported here.", nameof(expression));
+
+            var targetType = Import(member.GetDeclaringType());
+            var propertyName = member.Name;
+
+            return targetType.Properties.Single(m => m.Name == propertyName);
+        }
+
+        /// <summary>
+        /// Imports the field's declaring type into the target module and returns the field definition
+        /// of the corresponding field in the target module.
+        /// </summary>
+        /// <typeparam name="T">The field type of the field</typeparam>
+        /// <param name="expression">The field expression describing the source field.</param>
+        /// <returns>The field definition of the imported field</returns>
+        /// <exception cref="ArgumentException">
+        /// Only a member expression is supported here. - expression
+        /// or
+        /// Only a field expression is supported here. - expression
+        /// </exception>
+        public FieldDefinition ImportField<T>(Expression<Func<T>> expression)
+        {
+            if (!(expression.Body is MemberExpression memberExpression))
+                throw new ArgumentException("Only a member expression is supported here.", nameof(expression));
+
+            var member = memberExpression.Member;
+            if (!(member is FieldInfo))
+                throw new ArgumentException("Only a field expression is supported here.", nameof(expression));
+
+            var targetType = Import(member.GetDeclaringType());
+            var fieldName = member.Name;
+
+            return targetType.Fields.Single(m => m.Name == fieldName);
+        }
+
+        /// <summary>
+        /// Imports the event's declaring type into the target module and returns the event definition
+        /// of the corresponding event in the target module.
+        /// </summary>
+        /// <typeparam name="T">The event type of the event</typeparam>
+        /// <param name="expression">The event expression describing the source event.</param>
+        /// <returns>The event definition of the imported event</returns>
+        /// <exception cref="ArgumentException">
+        /// Only a member expression is supported here. - expression
+        /// or
+        /// Only a event expression is supported here. - expression
+        /// </exception>
+        public EventDefinition ImportEvent<T>(Expression<Func<T>> expression)
+        {
+            if (!(expression.Body is MemberExpression memberExpression))
+                throw new ArgumentException("Only a member expression is supported here.", nameof(expression));
+
+            var member = memberExpression.Member;
+            if (!(member is EventInfo))
+                throw new ArgumentException("Only a event expression is supported here.", nameof(expression));
+
+            var targetType = Import(member.GetDeclaringType());
+            var eventName = member.Name;
+
+            return targetType.Events.Single(m => m.Name == eventName);
+        }
+
+        /// <summary>
+        /// Returns a collection of the imported types.
+        /// </summary>
+        /// <returns>The collection of imported types.</returns>
+        public IDictionary<TypeDefinition, TypeDefinition> ListImportedTypes(bool includeNested = false, bool includeEmbedded = false)
+        {
+            return _targetTypesBySource
+                .Where(t => includeNested || t.Value?.DeclaringType == null)
+                .Where(t => includeEmbedded || !t.Value.IsEmbeddedType())
+                .ToDictionary(item => item.Key, item => item.Value);
+        }
+
+        /// <summary>
+        /// Returns a collection of the imported modules.
+        /// </summary>
+        /// <returns>The collection of imported modules.</returns>
+        public ICollection<ModuleDefinition> ListImportedModules()
+        {
+            return _sourceModuleDefinitions.Values;
+        }
 
         private static bool DefaultCanDeferMethodImport(MethodDefinition method)
         {
@@ -67,6 +244,34 @@
         private bool DeferMethodImport(MethodDefinition method)
         {
             return CompactMode && DeferMethodImportCallback(method);
+        }
+
+        private ModuleDefinition RegisterSourceModule(Assembly assembly)
+        {
+            var assemblyName = assembly.FullName;
+
+            if (_sourceModuleDefinitions.TryGetValue(assemblyName, out var sourceModule))
+                return sourceModule;
+
+            var fileName = new Uri(assembly.CodeBase, UriKind.Absolute).LocalPath;
+            if (string.IsNullOrEmpty(fileName))
+                throw new InvalidOperationException("Unable get location of assembly " + assembly);
+
+            sourceModule = ModuleDefinition.ReadModule(fileName, new ReaderParameters { AssemblyResolver = AssemblyResolver });
+
+            try
+            {
+                sourceModule.ReadSymbols();
+            }
+            catch
+            {
+                // module has no symbols, just go without...
+            }
+
+            _sourceModuleDefinitions[assemblyName] = sourceModule;
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            return sourceModule;
         }
 
         public void RegisterSourceModule(ModuleDefinition sourceModule)
@@ -89,6 +294,22 @@
             }
 
             _sourceModuleDefinitions[assemblyName] = sourceModule;
+        }
+
+        private TypeDefinition ImportType(Type type)
+        {
+            var assembly = type.Assembly;
+
+            var sourceModule = RegisterSourceModule(assembly);
+
+            var sourceType = sourceModule.GetType(type.GetFullName());
+
+            var importedTypeDefinition = ImportTypeDefinition(sourceType);
+
+            if (importedTypeDefinition == null)
+                throw new InvalidOperationException("Did not find type " + type.GetFullName() + " in module " + sourceModule.FileName);
+
+            return ProcessDeferredActions(importedTypeDefinition);
         }
 
         [return: NotNullIfNotNull("sourceType")]
@@ -647,6 +868,12 @@
         }
 
         [return: NotNullIfNotNull("source")]
+        public TypeReference? ImportType(TypeReference? source, MethodReference? targetMethod)
+        {
+            return ProcessDeferredActions(InternalImportType(source, targetMethod));
+        }
+
+        [return: NotNullIfNotNull("source")]
         private TypeReference? InternalImportType(TypeReference? source, MethodReference? targetMethod)
         {
             switch (source)
@@ -853,9 +1080,11 @@
             }
         }
 
-        private TypeReference TemporaryPlaceholderType => new("temporary", "type", TargetModule, TargetModule);
-        
-        public void ProcessDeferredActions()
+        private TypeReference TemporaryPlaceholderType => new TypeReference("temporary", "type", TargetModule, TargetModule);
+
+        [return: NotNullIfNotNull("target")]
+        private T? ProcessDeferredActions<T>(T? target)
+            where T : class
         {
             while (true)
             {
@@ -866,11 +1095,172 @@
                 _deferredActions.RemoveAt(0);
                 action();
             }
-        }
-    }
 
+            return target;
+        }
+
+        public void ProcessDeferredActions() => ProcessDeferredActions(default(object));
+    }
+    
     internal static class CodeImporterExtensions
     {
+        public static void ILMerge(this CodeImporter codeImporter)
+        {
+            var module = codeImporter.TargetModule;
+
+            var existingTypes = module.GetTypes()
+                .Except(codeImporter.ListImportedTypes(true).Values)
+                .ToList();
+
+            MergeAttributes(codeImporter, module);
+            MergeAttributes(codeImporter, module.Assembly);
+
+            foreach (var typeDefinition in existingTypes)
+            {
+                MergeAttributes(codeImporter, typeDefinition);
+                MergeGenericParameters(codeImporter, typeDefinition);
+
+                typeDefinition.BaseType = codeImporter.ImportType(typeDefinition.BaseType, null);
+
+                if (typeDefinition.HasInterfaces)
+                {
+                    foreach (var interfaceImplementation in typeDefinition.Interfaces)
+                    {
+                        MergeAttributes(codeImporter, interfaceImplementation);
+                        interfaceImplementation.InterfaceType = codeImporter.ImportType(interfaceImplementation.InterfaceType, null);
+                    }
+                }
+
+                if (typeDefinition.HasFields)
+                {
+                    foreach (var fieldDefinition in typeDefinition.Fields)
+                    {
+                        MergeAttributes(codeImporter, fieldDefinition);
+                        fieldDefinition.FieldType = codeImporter.ImportType(fieldDefinition.FieldType, null);
+                    }
+                }
+
+                if (typeDefinition.HasEvents)
+                {
+                    foreach (var eventDefinition in typeDefinition.Events)
+                    {
+                        MergeAttributes(codeImporter, eventDefinition);
+                        eventDefinition.EventType = codeImporter.ImportType(eventDefinition.EventType, null);
+                    }
+                }
+
+                if (typeDefinition.HasProperties)
+                {
+                    foreach (var propertyDefinition in typeDefinition.Properties)
+                    {
+                        MergeAttributes(codeImporter, propertyDefinition);
+
+                        propertyDefinition.PropertyType = codeImporter.ImportType(propertyDefinition.PropertyType, null);
+
+                        if (!propertyDefinition.HasParameters)
+                            continue;
+
+                        foreach (var parameter in propertyDefinition.Parameters)
+                        {
+                            MergeAttributes(codeImporter, parameter);
+                            parameter.ParameterType = codeImporter.ImportType(parameter.ParameterType, null);
+                        }
+                    }
+                }
+
+                if (typeDefinition.HasMethods)
+                {
+                    foreach (var methodDefinition in typeDefinition.Methods)
+                    {
+                        MergeAttributes(codeImporter, methodDefinition);
+                        MergeGenericParameters(codeImporter, methodDefinition);
+
+                        methodDefinition.ReturnType = codeImporter.ImportType(methodDefinition.ReturnType, methodDefinition);
+
+                        if (methodDefinition.HasOverrides)
+                        {
+                            foreach (var methodOverride in methodDefinition.Overrides)
+                            {
+                                if (methodOverride is MethodDefinition)
+                                {
+                                    if (!codeImporter.IsLocalOrExternalReference(methodOverride.DeclaringType))
+                                    {
+                                        throw new NotImplementedException("Method overrides using MethodDefinition is not supported");
+                                    }
+                                }
+                                else
+                                {
+                                    MergeMethodReference(codeImporter, methodOverride, methodDefinition);
+                                }
+                            }
+                        }
+
+                        if (methodDefinition.HasParameters)
+                        {
+                            foreach (var parameter in methodDefinition.Parameters)
+                            {
+                                MergeAttributes(codeImporter, parameter);
+                                parameter.ParameterType = codeImporter.ImportType(parameter.ParameterType, methodDefinition);
+                            }
+                        }
+
+                        var methodBody = methodDefinition.Body;
+                        if (methodBody == null)
+                            continue;
+
+                        if (methodBody.HasVariables)
+                        {
+                            foreach (var variable in methodBody.Variables)
+                            {
+                                variable.VariableType = codeImporter.ImportType(variable.VariableType, methodDefinition);
+                            }
+                        }
+
+                        foreach (var instruction in methodBody.Instructions)
+                        {
+                            switch (instruction.Operand)
+                            {
+                                case MethodDefinition _:
+                                    break;
+
+                                case GenericInstanceMethod genericInstanceMethod:
+                                    instruction.Operand = codeImporter.Import(genericInstanceMethod);
+                                    break;
+
+                                case MethodReference methodReference:
+                                    MergeMethodReference(codeImporter, methodReference, methodDefinition);
+                                    break;
+
+                                case TypeDefinition _:
+                                    break;
+
+                                case TypeReference typeReference:
+                                    instruction.Operand = codeImporter.ImportType(typeReference, methodDefinition);
+                                    break;
+
+                                case FieldReference fieldReference:
+                                    fieldReference.FieldType = codeImporter.ImportType(fieldReference.FieldType, methodDefinition);
+                                    fieldReference.DeclaringType = codeImporter.ImportType(fieldReference.DeclaringType, methodDefinition);
+                                    break;
+                            }
+                        }
+
+                        if (methodBody.HasExceptionHandlers)
+                        {
+                            foreach (var exceptionHandler in methodBody.ExceptionHandlers)
+                            {
+                                exceptionHandler.CatchType = codeImporter.ImportType(exceptionHandler.CatchType, methodDefinition);
+                            }
+                        }
+                    }
+                }
+            }
+
+            var importedAssemblyNames = new HashSet<string>(codeImporter.ListImportedModules().Select(m => m.Assembly.FullName));
+
+            module.AssemblyReferences.RemoveAll(ar => importedAssemblyNames.Contains(ar.FullName));
+        }
+
         public static bool IsStatic(this TypeDefinition type)
         {
             return type.IsAbstract && type.IsSealed;
@@ -908,10 +1298,133 @@
         {
             return left.ParameterType.FullName == right.ParameterType.FullName && left.Attributes == right.Attributes;
         }
+
+        private static void MergeMethodReference(CodeImporter codeImporter, MethodReference methodReference, MethodDefinition methodDefinition)
+        {
+            codeImporter.ImportReferencedMethod(methodReference);
+
+            methodReference.DeclaringType = codeImporter.ImportType(methodReference.DeclaringType, methodDefinition);
+            methodReference.ReturnType = codeImporter.ImportType(methodReference.ReturnType, methodDefinition);
+
+            if (methodReference.HasParameters)
+            {
+                foreach (var parameter in methodReference.Parameters)
+                {
+                    parameter.ParameterType = codeImporter.ImportType(parameter.ParameterType, methodDefinition);
+                }
+            }
+
+            if (methodReference.HasGenericParameters)
+            {
+                MergeGenericParameters(codeImporter, methodReference);
+            }
+        }
+
+        private static void MergeGenericParameters(CodeImporter codeImporter, IGenericParameterProvider? provider)
+        {
+            if (provider?.HasGenericParameters != true)
+                return;
+
+            foreach (var parameter in provider.GenericParameters)
+            {
+                foreach (var constraint in parameter.Constraints)
+                {
+                    constraint.ConstraintType = codeImporter.ImportType(constraint.ConstraintType, provider as MethodReference);
+                }
+            }
+        }
+
+        private static void MergeAttributes(CodeImporter codeImporter, Mono.Cecil.ICustomAttributeProvider? attributeProvider)
+        {
+            if (attributeProvider?.HasCustomAttributes != true)
+                return;
+
+            foreach (var attribute in attributeProvider.CustomAttributes)
+            {
+                attribute.Constructor = codeImporter.ImportMethod(attribute.Constructor);
+
+                if (attribute.HasConstructorArguments)
+                {
+                    attribute.ConstructorArguments.ReplaceItems(arg =>
+                    {
+                        var value = arg.Value;
+                        if (value is TypeReference typeReference)
+                        {
+                            value = codeImporter.ImportType(typeReference, null);
+                        }
+
+                        return new CustomAttributeArgument(codeImporter.ImportType(arg.Type, null), value);
+                    });
+                }
+
+                if (attribute.HasFields)
+                {
+                    attribute.Fields.ReplaceItems(arg => new Mono.Cecil.CustomAttributeNamedArgument(arg.Name, new CustomAttributeArgument(codeImporter.ImportType(arg.Argument.Type, null), arg.Argument.Value)));
+                }
+
+                if (attribute.HasProperties)
+                {
+                    attribute.Properties.ReplaceItems(arg => new Mono.Cecil.CustomAttributeNamedArgument(arg.Name, new CustomAttributeArgument(codeImporter.ImportType(arg.Argument.Type, null), arg.Argument.Value)));
+                }
+            }
+        }
     }
 
     internal interface IModuleResolver
     {
         ModuleDefinition? Resolve(TypeReference typeReference, string assemblyName);
+    }
+
+    internal class AssemblyModuleResolver : IModuleResolver
+    {
+        private readonly HashSet<string> _assemblyNames;
+
+        public AssemblyModuleResolver(params Assembly[] assemblies)
+        {
+            _assemblyNames = new HashSet<string>(assemblies.Select(a => a.FullName));
+        }
+
+        public AssemblyModuleResolver(params string[] assemblyNames)
+        {
+            _assemblyNames = new HashSet<string>(assemblyNames);
+        }
+
+        public ModuleDefinition? Resolve(TypeReference typeReference, string assemblyName)
+        {
+            return _assemblyNames.Contains(assemblyName) ? typeReference.Resolve()?.Module : null;
+        }
+    }
+
+    internal class LocalReferenceModuleResolver : IModuleResolver
+    {
+        private readonly HashSet<string> _ignoredAssemblyNames = new HashSet<string>();
+
+        public ModuleDefinition? Resolve(TypeReference typeReference, string assemblyName)
+        {
+            if (_ignoredAssemblyNames.Contains(assemblyName))
+                return null;
+
+            try
+            {
+                var typeDefinition = typeReference.Resolve();
+                if (typeDefinition != null)
+                {
+                    var module = typeDefinition.Module;
+                    var moduleFileName = module.FileName;
+
+                    if (Path.GetDirectoryName(moduleFileName) == @".")
+                    {
+                        return module;
+                    }
+                }
+            }
+            catch (AssemblyResolutionException)
+            {
+                // fall through...
+            }
+
+            _ignoredAssemblyNames.Add(assemblyName);
+            return null;
+        }
     }
 }

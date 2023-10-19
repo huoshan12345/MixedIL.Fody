@@ -1,5 +1,4 @@
-﻿.assembly extern System.Runtime {}
-.assembly extern MixedIL.Tests.AssemblyToProcess {}
+﻿.assembly extern MixedIL.Tests.AssemblyToProcess {}
 
 .class public abstract sealed auto ansi beforefieldinit System.ObjectExtensions
 {

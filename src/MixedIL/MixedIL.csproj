@@ -30,4 +30,6 @@
     <Content Include="MixedIL.targets" Pack="true" BuildAction="None" PackagePath="build\MixedIL.Fody.targets" />
   </ItemGroup>
 
+  <Import Project="..\MoreFodyHelpers.props" />
+
 </Project>

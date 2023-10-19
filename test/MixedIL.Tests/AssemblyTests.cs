@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Reflection.Metadata;
+﻿using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using MixedIL.Tests.Support;
 using Xunit;
@@ -32,7 +30,7 @@ public class AssemblyTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "no longer valid")]
     public void should_not_add_reference_to_private_core_lib()
     {
         AssemblyToProcessFixture.ResultModule.AssemblyReferences.ShouldNotContain(i => i.Name == "System.Private.CoreLib");

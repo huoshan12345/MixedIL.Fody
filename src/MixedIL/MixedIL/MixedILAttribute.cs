@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace MixedIL
+namespace MixedIL;
+
+/// <summary>
+/// 
+/// </summary>
+[AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
+public class MixedILAttribute : Attribute
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
-    public class MixedILAttribute : Attribute
-    {
-    }
 }

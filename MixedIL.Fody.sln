@@ -28,7 +28,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{41D4FE14
 		build\pack.ps1 = build\pack.ps1
 		build\pkg.version = build\pkg.version
 		README.md = README.md
-		build\test_all.ps1 = build\test_all.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{BBD57099-9025-40DB-9A1E-5094DE6736A9}"
@@ -44,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CFB3FFC9-C65
 		src\Directory.Build.props = src\Directory.Build.props
 		src\LocalInclude.props = src\LocalInclude.props
 		src\LocalWeaver.props = src\LocalWeaver.props
+		src\MoreFodyHelpers.props = src\MoreFodyHelpers.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Tests.SourceGenerator", "test\MixedIL.Tests.SourceGenerator\MixedIL.Tests.SourceGenerator.csproj", "{FE747136-736B-4D37-A9FB-61F1B4872933}"
@@ -52,7 +52,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Unsafe", "src\Mixed
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MixedIL.Unsafe.Tests", "test\MixedIL.Unsafe.Tests\MixedIL.Unsafe.Tests.csproj", "{15601722-5D5B-48FD-BAC6-C66CC9EC01FF}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MixedIL.Example.FSharp", "src\MixedIL.Example.FSharp\MixedIL.Example.FSharp.fsproj", "{6949C62E-B390-432A-A57E-F4EC15E8C7E3}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "MixedIL.Example.FSharp", "src\MixedIL.Example.FSharp\MixedIL.Example.FSharp.fsproj", "{6949C62E-B390-432A-A57E-F4EC15E8C7E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

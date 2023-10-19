@@ -1,72 +1,69 @@
 ﻿using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Fody;
 using MixedIL.Fody;
 using MixedIL.Tests.InvalidAssemblyToProcess;
-using Mono.Cecil;
 
-namespace MixedIL.Tests.Support
+namespace MixedIL.Tests.Support;
+
+public static class InvalidAssemblyToProcessFixture
 {
-    public static class InvalidAssemblyToProcessFixture
+    public static TestResult TestResult { get; }
+
+    public static ModuleDefinition ResultModule { get; }
+
+    public static bool IsDebug { get; }
+
+    static InvalidAssemblyToProcessFixture()
     {
-        public static TestResult TestResult { get; }
+        var weavingTask = new ModuleWeaver();
+        TestResult = weavingTask.ExecuteTestRun(
+            FixtureHelper.IsolateAssembly<InvalidAssemblyToProcessReference>(),
+            false,
+            beforeExecuteCallback: FixtureHelper.BeforeExecuteCallback
+        );
 
-        public static ModuleDefinition ResultModule { get; }
+        using var assemblyResolver = new TestAssemblyResolver();
 
-        public static bool IsDebug { get; }
-
-        static InvalidAssemblyToProcessFixture()
+        ResultModule = ModuleDefinition.ReadModule(TestResult.AssemblyPath, new ReaderParameters(ReadingMode.Immediate)
         {
-            var weavingTask = new ModuleWeaver();
-            TestResult = weavingTask.ExecuteTestRun(
-                FixtureHelper.IsolateAssembly<InvalidAssemblyToProcessReference>(),
-                false,
-                beforeExecuteCallback: FixtureHelper.BeforeExecuteCallback
-            );
+            AssemblyResolver = assemblyResolver
+        });
 
-            using var assemblyResolver = new TestAssemblyResolver();
+        var typeName = TestResult.Assembly.GetName().Name + "." + nameof(InvalidAssemblyToProcessReference);
+        IsDebug = (bool)TestResult.Assembly.GetType(typeName, true)!
+            .InvokeMember(name: nameof(IsDebug),
+                invokeAttr: BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Static,
+                binder: null,
+                target: null,
+                args: null)!;
+    }
 
-            ResultModule = ModuleDefinition.ReadModule(TestResult.AssemblyPath, new ReaderParameters(ReadingMode.Immediate)
-            {
-                AssemblyResolver = assemblyResolver
-            });
+    public static string CannotFindType(string type)
+    {
+        var error = string.Format(ModuleWeaver.TypeNotFoundFormat, type);
+        var errorMessage = TestResult.Errors.SingleOrDefault(err => err.Text.Contains(error));
+        errorMessage.ShouldNotBeNull();
+        return errorMessage!.Text;
+    }
 
-            var typeName = TestResult.Assembly.GetName().Name + "." + nameof(InvalidAssemblyToProcessReference);
-            IsDebug = (bool)TestResult.Assembly.GetType(typeName, true)!
-                                      .InvokeMember(name: nameof(IsDebug),
-                                                    invokeAttr: BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Static,
-                                                    binder: null,
-                                                    target: null,
-                                                    args: null)!;
-        }
+    public static string CannotFindMethod(string type, string method)
+    {
+        var error = string.Format(ModuleWeaver.MethodNotFoundFormat, type, method);
+        var errorMessage = TestResult.Errors.SingleOrDefault(err => err.Text.Contains(error));
+        errorMessage.ShouldNotBeNull();
+        return errorMessage!.Text;
+    }
 
-        public static string CannotFindType(string type)
-        {
-            var error = string.Format(ModuleWeaver.TypeNotFoundFormat, type);
-            var errorMessage = TestResult.Errors.SingleOrDefault(err => err.Text.Contains(error));
-            errorMessage.ShouldNotBeNull();
-            return errorMessage!.Text;
-        }
+    public static string ShouldHaveError(string className, string methodName, bool sequencePointRequired)
+    {
+        var expectedMessagePart = $" {className}::{methodName}(";
+        var errorMessage = TestResult.Errors.SingleOrDefault(err => err.Text.Contains(expectedMessagePart));
+        errorMessage.ShouldNotBeNull();
 
-        public static string CannotFindMethod(string type, string method)
-        {
-            var error = string.Format(ModuleWeaver.MethodNotFoundFormat, type, method);
-            var errorMessage = TestResult.Errors.SingleOrDefault(err => err.Text.Contains(error));
-            errorMessage.ShouldNotBeNull();
-            return errorMessage!.Text;
-        }
+        if (sequencePointRequired)
+            errorMessage!.SequencePoint.ShouldNotBeNull();
 
-        public static string ShouldHaveError(string className, string methodName, bool sequencePointRequired)
-        {
-            var expectedMessagePart = $" {className}::{methodName}(";
-            var errorMessage = TestResult.Errors.SingleOrDefault(err => err.Text.Contains(expectedMessagePart));
-            errorMessage.ShouldNotBeNull();
-
-            if (sequencePointRequired)
-                errorMessage!.SequencePoint.ShouldNotBeNull();
-
-            return errorMessage!.Text;
-        }
+        return errorMessage!.Text;
     }
 }
