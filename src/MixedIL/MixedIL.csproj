@@ -2,15 +2,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
-    <Authors>huoshan12345</Authors>
     <IsPackable>true</IsPackable>
     <DebugType>embedded</DebugType>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Copyright>Copyright $([System.DateTime]::UtcNow.ToString(yyyy)).</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RootNamespace></RootNamespace>
     <WeaverPropsFile>MixedIL.props</WeaverPropsFile>
   </PropertyGroup>
