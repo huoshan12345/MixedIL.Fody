@@ -2,7 +2,7 @@
   <ItemGroup>
     <WeaverFiles Include="$(MsBuildThisFileDirectory)..\weaver\$(MSBuildThisFileName).dll" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(MixedILExcludeIgnoresAccessChecksToAttribute)' != 'true'">
     <Compile Condition="'$(ProjectExt)' == '.csproj'"
              Include="$(MSBuildThisFileDirectory)..\content\IgnoresAccessChecksToAttribute.cs"/>
     <Compile Condition="'$(ProjectExt)' == '.fsproj'"

@@ -78,6 +78,18 @@ public class ObjectHelper
 
 ---
 
+## Options
+
+Options that can be configured through some MSBuild properties to set in consuming projects.
+
+- `MixedILExcludeIgnoresAccessChecksToAttribute`: Exclude **IgnoresAccessChecksToAttribute** from source files to comiple.
+
+#### NOTE:
+
+- **IgnoresAccessChecksToAttribute** is used to access non-public types and members across assemblies through IL code. It is helpful when you are using `MixedIL` or `System.Reflection.Emit`.
+
+---
+
 ## Examples
 
 - [An example project](https://github.com/huoshan12345/MixedIL.Fody/tree/master/src/MixedIL.Example)
