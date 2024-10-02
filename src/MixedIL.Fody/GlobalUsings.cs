@@ -9,3 +9,4 @@ global using System.Reflection;
 global using Mono.Cecil;
 global using Mono.Cecil.Cil;
 global using MoreFodyHelpers.Extensions;
+global using MoreFodyHelpers.Support;
