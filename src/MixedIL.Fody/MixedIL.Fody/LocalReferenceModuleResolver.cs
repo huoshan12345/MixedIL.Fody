@@ -1,5 +1,4 @@
 ﻿using FodyTools;
-using MoreFodyHelpers;
 
 namespace MixedIL.Fody;
 

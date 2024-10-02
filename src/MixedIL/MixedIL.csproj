@@ -11,17 +11,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.8.0" PrivateAssets="none" />
-    <PackageReference Include="FodyPackaging" Version="6.8.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+    <PackageReference Include="Fody" Version="6.8.2" PrivateAssets="none" />
+    <PackageReference Include="FodyPackaging" Version="6.8.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup Label="FilesToCopy">
-    <Content Include="System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.fs" Pack="true" BuildAction="None" PackagePath="content\" />
-    <Content Include="System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.cs" Pack="true" BuildAction="None" PackagePath="content\" />
     <Content Include="MixedIL.targets" Pack="true" BuildAction="None" PackagePath="build\MixedIL.Fody.targets" />
   </ItemGroup>
 
