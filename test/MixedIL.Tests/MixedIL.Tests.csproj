@@ -15,7 +15,7 @@
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <PackageReference Include="IsExternalInit" Version="1.0.3" PrivateAssets="all" />
     <!--to fix the error: "Could not load file or assembly 'System.Reflection.Metadata" when running tests on net472-->
-    <PackageReference Include="System.Reflection.Metadata" Version="9.0.6" />
+    <PackageReference Include="System.Reflection.Metadata" Version="9.0.7" />
     <Reference Include="System.Runtime" />
   </ItemGroup>
 
