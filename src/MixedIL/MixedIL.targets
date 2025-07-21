@@ -8,8 +8,8 @@
     <!-- If ILAsmToolPath is specified, it will be used and no packages will be restored
          Otherwise packages will be restored and ilasm and ildasm will be referenced from their packages.  -->
     <_IlasmDir Condition="'$(ILAsmToolPath)' != ''">$([MSBuild]::NormalizeDirectory($(ILAsmToolPath)))</_IlasmDir>
-    <_DllFile>@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).il.dll', ' ')</_DllFile>
-    <_PdbFile>@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).il.pdb', ' ')</_PdbFile>
+    <_DllFile>@(IntermediateAssembly-&gt;'%(RootDir)%(Directory)%(Filename).il.dll', ' ')</_DllFile>
+    <_PdbFile>@(IntermediateAssembly-&gt;'%(RootDir)%(Directory)%(Filename).il.pdb', ' ')</_PdbFile>
   </PropertyGroup>
 
 
@@ -37,7 +37,7 @@
       <_IL Include="@(_ILInNone)" />
     </ItemGroup>
 
-    <CallTarget Targets="CreateEmptyIL" Condition="@(_IL->Count()) == 0"/>
+    <CallTarget Targets="CreateEmptyIL" Condition="@(_IL-&gt;Count()) == 0" />
   </Target>
 
   <Target Name="CreateEmptyIL">
@@ -45,19 +45,13 @@
       <_EmptyIlFile>$(IntermediateOutputPath)_empty.il</_EmptyIlFile>
       <_EmptyILContent>.assembly extern mscorlib {}</_EmptyILContent>
     </PropertyGroup>
-    <WriteLinesToFile
-      File="$(_EmptyIlFile)"
-      Lines="$(_EmptyILContent)"
-      Overwrite="true"/>
+    <WriteLinesToFile File="$(_EmptyIlFile)" Lines="$(_EmptyILContent)" Overwrite="true" />
     <ItemGroup>
       <_IL Include="$(_EmptyIlFile)" />
     </ItemGroup>
   </Target>
 
-  <Target Name="CoreCompileIL"
-          Condition="@(_IL->Count()) != 0"
-          DependsOnTargets="ResolveIlAsmToolPaths"
-          AfterTargets="InitializeIL">
+  <Target Name="CoreCompileIL" Condition="@(_IL-&gt;Count()) != 0" DependsOnTargets="ResolveIlAsmToolPaths" AfterTargets="InitializeIL">
 
     <PropertyGroup>
       <_OutputTypeArgument>-DLL</_OutputTypeArgument>
@@ -72,7 +66,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <_ILAsm>$(_ILAsm) @(_IL->Distinct()->'"%(FullPath)"', ' ')</_ILAsm>
+      <_ILAsm>$(_ILAsm) @(_IL-&gt;Distinct()-&gt;'"%(FullPath)"', ' ')</_ILAsm>
     </PropertyGroup>
 
     <Exec Command="$(_ILAsm)">

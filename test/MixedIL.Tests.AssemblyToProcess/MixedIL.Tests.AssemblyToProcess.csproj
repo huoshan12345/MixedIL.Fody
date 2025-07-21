@@ -12,6 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+
+    <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="9.0.7" />
     <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
     <PackageReference Include="xunit" Version="2.9.3" />
   </ItemGroup>

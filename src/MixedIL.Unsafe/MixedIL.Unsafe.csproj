@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+
+    <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="9.0.7" />
     <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\MixedIL\MixedIL.csproj" PrivateAssets="all" />
   </ItemGroup>
