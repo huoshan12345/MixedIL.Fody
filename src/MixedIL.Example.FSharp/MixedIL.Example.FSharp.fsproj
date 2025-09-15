@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="9.0.9" />
     <None Include="..\MixedIL.Example\System\*.il;" Link="System\%(Filename)%(Extension)" />
   </ItemGroup>
 

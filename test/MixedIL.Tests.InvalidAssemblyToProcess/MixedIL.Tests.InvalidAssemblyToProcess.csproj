@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="9.0.9" />
     <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
   </ItemGroup>
 
