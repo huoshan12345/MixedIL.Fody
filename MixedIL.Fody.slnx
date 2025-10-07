@@ -1,0 +1,35 @@
+<Solution>
+  <Folder Name="/build/">
+    <File Path=".github/workflows/build.yml" />
+    <File Path="build/incre_ver.ps1" />
+    <File Path="build/pack.ps1" />
+    <File Path="build/pkg.version" />
+    <File Path="NuGet.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/example/">
+    <Project Path="src/MixedIL.Example.FSharp/MixedIL.Example.FSharp.fsproj" />
+    <Project Path="src/MixedIL.Example/MixedIL.Example.csproj" />
+    <Project Path="src/MixedIL.Unsafe/MixedIL.Unsafe.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/LocalInclude.props" />
+    <File Path="src/LocalWeaver.props" />
+    <File Path="src/MoreFodyHelpers.props" />
+    <Project Path="src/MixedIL.Fody/MixedIL.Fody.csproj" />
+    <Project Path="src/MixedIL/MixedIL.csproj">
+      <BuildDependency Project="src/MixedIL.Fody/MixedIL.Fody.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/test/">
+    <File Path="test/CopyILFile.targets" />
+    <File Path="test/Directory.Build.props" />
+    <Project Path="test/MixedIL.Tests.AssemblyToProcess/MixedIL.Tests.AssemblyToProcess.csproj" />
+    <Project Path="test/MixedIL.Tests.InvalidAssemblyToProcess/MixedIL.Tests.InvalidAssemblyToProcess.csproj" />
+    <Project Path="test/MixedIL.Tests.SourceGenerator/MixedIL.Tests.SourceGenerator.csproj" />
+    <Project Path="test/MixedIL.Tests.StandardAssemblyToProcess/MixedIL.Tests.StandardAssemblyToProcess.csproj" />
+    <Project Path="test/MixedIL.Tests/MixedIL.Tests.csproj" />
+    <Project Path="test/MixedIL.Unsafe.Tests/MixedIL.Unsafe.Tests.csproj" />
+  </Folder>
+</Solution>
