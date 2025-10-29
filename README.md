@@ -3,8 +3,8 @@
 [![Build](https://github.com/huoshan12345/MixedIL.Fody/actions/workflows/build.yml/badge.svg)](https://github.com/huoshan12345/MixedIL.Fody/actions/workflows/build.yml)
 [![NuGet package](https://img.shields.io/nuget/v/MixedIL.Fody.svg?logo=NuGet)](https://www.nuget.org/packages/MixedIL.Fody)
 [![.net](https://img.shields.io/badge/.net%20standard-2.0-ff69b4.svg?)](https://www.microsoft.com/net/download)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/huoshan12345/MixedIL.Fody/blob/master/LICENSE)  
-![Icon](https://raw.githubusercontent.com/huoshan12345/MixedIL.Fody/master/icon.png)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/huoshan12345/MixedIL.Fody/blob/main/LICENSE)  
+![Icon](https://raw.githubusercontent.com/huoshan12345/MixedIL.Fody/main/icon.png)
 
 ## This is an add-in for [Fody](https://github.com/Fody/Fody) which allows you to impliment C# method by IL code.
 
@@ -33,7 +33,7 @@
   </Weavers>
   ```
 
-  See [Fody usage](https://github.com/Fody/Home/blob/master/pages/usage.md) for general guidelines, and [Fody Configuration](https://github.com/Fody/Home/blob/master/pages/configuration.md) for additional options.
+  See [Fody usage](https://github.com/Fody/Home/blob/main/pages/usage.md) for general guidelines, and [Fody Configuration](https://github.com/Fody/Home/blob/main/pages/configuration.md) for additional options.
 
 ---
 
@@ -92,8 +92,8 @@ Options that can be configured through some MSBuild properties to set in consumi
 
 ## Examples
 
-- [An example project](https://github.com/huoshan12345/MixedIL.Fody/tree/master/src/MixedIL.Example)
-- A reimplementation of the `System.Runtime.CompilerServices.Unsafe` called [MixedIL.Unsafe](https://github.com/huoshan12345/MixedIL.Fody/tree/master/src/MixedIL.Unsafe) is provided as an example.
+- [An example project](https://github.com/huoshan12345/MixedIL.Fody/tree/main/src/MixedIL.Example)
+- A reimplementation of the `System.Runtime.CompilerServices.Unsafe` called [MixedIL.Unsafe](https://github.com/huoshan12345/MixedIL.Fody/tree/main/src/MixedIL.Unsafe) is provided as an example.
 
 ---
 
@@ -105,5 +105,5 @@ Options that can be configured through some MSBuild properties to set in consumi
 - `MixedIL` is more flexible and less restrictive, since pure IL code will be written.  
   For instance, you can invoke backing field of a property without setter by pure IL, like this:  
   `stfld string [System.Runtime]System.Reflection.AssemblyKeyNameAttribute::'<KeyName>k__BackingField'`  
-  see [example code](https://github.com/huoshan12345/MixedIL.Fody/blob/master/test/MixedIL.Tests.AssemblyToProcess/ObjectExtensions.il#L11).  
+  see [example code](https://github.com/huoshan12345/MixedIL.Fody/blob/main/test/MixedIL.Tests.AssemblyToProcess/ObjectExtensions.il#L11).  
   However, up to now, you will get compile error if you would like to implement it using `InlineIL`.

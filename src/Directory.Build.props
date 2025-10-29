@@ -15,7 +15,7 @@
     <PackageTags>IL;MSIL;Fody;ILWeaving;Cecil</PackageTags>
     <PackageProjectUrl>https://github.com/huoshan12345/MixedIL.Fody</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIconUrl>https://raw.githubusercontent.com/huoshan12345/MixedIL.Fody/master/icon.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/huoshan12345/MixedIL.Fody/main/icon.png</PackageIconUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 

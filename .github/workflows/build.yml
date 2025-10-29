@@ -2,10 +2,10 @@ name: Build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 env:
   DOTNET_NOLOGO: 1
@@ -37,7 +37,7 @@ jobs:
         run: dotnet test ${{ env.SOLUTION }} --no-restore -c Release
 
       - name: NuGet Publish
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         shell: pwsh
         run: |
           ./build/pack.ps1
@@ -50,7 +50,7 @@ jobs:
           echo $ver
 
       - name: Create Tag
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: joutvhu/create-tag@v1
         with:
           tag_name: ${{ env.VERSION }}
@@ -59,7 +59,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
 
       - name: Create Release
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.VERSION }}
