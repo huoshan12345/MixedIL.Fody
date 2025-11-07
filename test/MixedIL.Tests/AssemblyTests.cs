@@ -3,6 +3,7 @@ using System.Reflection.PortableExecutable;
 using MixedIL.Tests.Support;
 using Xunit;
 using MixedIL.Fody;
+using MixedIL.Fody.Processing;
 
 namespace MixedIL.Tests;
 

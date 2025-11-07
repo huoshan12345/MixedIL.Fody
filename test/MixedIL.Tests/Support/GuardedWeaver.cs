@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using MixedIL.Fody;
+using MixedIL.Fody.Processing;
 using Mono.Cecil.Cil;
 
 namespace MixedIL.Tests.Support;

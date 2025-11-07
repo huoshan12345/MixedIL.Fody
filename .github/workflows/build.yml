@@ -36,6 +36,16 @@ jobs:
       - name: Test Release
         run: dotnet test ${{ env.SOLUTION }} --no-restore -c Release
 
+      - name: Test Report
+        uses: dorny/test-reporter@main
+        if: (success() || failure())
+        with:
+          name: Test Report
+          path: TestResults/**/*.trx
+          reporter: dotnet-trx
+          list-suites: failed
+          list-tests: failed
+
       - name: NuGet Publish
         if: ${{ github.ref == 'refs/heads/main' }}
         shell: pwsh

@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using Fody;
 using FodyTools;
-using MixedIL.Fody.Processing;
 using MoreFodyHelpers;
+using MoreFodyHelpers.Processing;
 
-namespace MixedIL.Fody;
+namespace MixedIL.Fody.Processing;
 
 public class ModuleWeaver : BaseModuleWeaver
 {
@@ -40,6 +40,8 @@ public class ModuleWeaver : BaseModuleWeaver
         };
         var typeMethods = iLModule.GetTypes().ToDictionary(m => m.FullName, m => m.Methods.ToDictionary(x => x.FullName, x => x));
 
+        using var context = new ModuleWeavingContext(ModuleDefinition, WeaverAnchors.AssemblyName, ProjectDirectoryPath);
+
         foreach (var type in ModuleDefinition.GetTypes())
         {
             foreach (var method in type.Methods)
@@ -74,14 +76,17 @@ public class ModuleWeaver : BaseModuleWeaver
                 }
             }
         }
-        ModuleDefinition.AddIgnoresAccessCheck();
-        RemoveLibReference();
+
+        context.AddIgnoresAccessCheck();
+        context.AddIgnoresAccessCheck(AssemblyNames.MsCorLib);
+        context.AddIgnoresAccessCheck(AssemblyNames.SystemPrivateCoreLib);
+        context.RemoveReference(WeaverAnchors.AssemblyName, this);
     }
 
     protected virtual void AddError(string message, SequencePoint? sequencePoint)
         => _log.Error(message, sequencePoint);
 
-    public override IEnumerable<string> GetAssembliesForScanning() => Enumerable.Empty<string>();
+    public override IEnumerable<string> GetAssembliesForScanning() => [];
 
     private FileInfo GetILFile()
     {
@@ -89,58 +94,5 @@ public class ModuleWeaver : BaseModuleWeaver
         var name = Path.GetFileNameWithoutExtension(fileInfo.Name);
         var il = name + ".il.dll";
         return new FileInfo(Path.Combine(fileInfo.DirectoryName!, il));
-    }
-
-    private void RemoveLibReference()
-    {
-        var libRef = ModuleDefinition.AssemblyReferences.FirstOrDefault(r => IsMixedILAssembly(r));
-        if (libRef == null)
-            return;
-
-        var importScopes = new HashSet<ImportDebugInformation>();
-
-        foreach (var method in ModuleDefinition.GetTypes().SelectMany(t => t.Methods))
-        {
-            foreach (var scope in method.DebugInformation.GetScopes())
-                ProcessScope(scope);
-        }
-
-        ModuleDefinition.AssemblyReferences.Remove(libRef);
-
-        var copyLocalFilesToRemove = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            libRef.Name + ".dll",
-            libRef.Name + ".xml",
-            libRef.Name + ".pdb" // We don't ship this, but future-proof that ;)
-        };
-
-        ReferenceCopyLocalPaths.RemoveAll(i => copyLocalFilesToRemove.Contains(Path.GetFileName(i)));
-
-        WriteDebug("References removed.");
-
-        void ProcessScope(ScopeDebugInformation scope)
-        {
-            ProcessImportScope(scope.Import);
-
-            if (scope.HasScopes)
-            {
-                foreach (var childScope in scope.Scopes)
-                    ProcessScope(childScope);
-            }
-        }
-
-        void ProcessImportScope(ImportDebugInformation? importScope)
-        {
-            if (importScope == null || !importScopes.Add(importScope))
-                return;
-
-            importScope.Targets.RemoveWhere(t => IsMixedILAssembly(t.AssemblyReference));
-            ProcessImportScope(importScope.Parent);
-        }
-
-        static bool IsMixedILAssembly(AssemblyNameReference? assembly)
-        {
-            return assembly?.Name == "MixedIL";
-        }
     }
 }

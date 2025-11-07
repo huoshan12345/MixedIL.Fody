@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <!--This project must target netstandard2.0.-->
@@ -8,9 +7,11 @@
     <PackageId>$(MSBuildProjectName).Fody</PackageId>
     <RootNamespace></RootNamespace>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
     <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
-    <PackageReference Include="MoreFodyHelpers" Version="0.0.8" GeneratePathProperty="true" />
+    <PackageReference Include="MoreFodyHelpers" Version="0.0.9" GeneratePathProperty="true" />
   </ItemGroup>
+
 </Project>

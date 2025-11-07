@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using MixedIL.Fody;
+using MixedIL.Fody.Processing;
 using MixedIL.Tests.InvalidAssemblyToProcess;
 
 namespace MixedIL.Tests.Support;
