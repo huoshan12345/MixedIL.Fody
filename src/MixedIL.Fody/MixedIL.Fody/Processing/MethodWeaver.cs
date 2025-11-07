@@ -1,5 +1,6 @@
 ﻿using Fody;
 using FodyTools;
+using MoreFodyHelpers.Processing;
 
 namespace MixedIL.Fody.Processing;
 

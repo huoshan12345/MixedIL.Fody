@@ -6,7 +6,7 @@ internal class LocalReferenceModuleResolver : IModuleResolver
 {
     private readonly IWeaverLogger _logger;
     private readonly HashSet<string> _referencePaths;
-    private readonly HashSet<string> _ignoredAssemblyNames = new();
+    private readonly HashSet<string> _ignoredAssemblyNames = [];
 
     public LocalReferenceModuleResolver(IWeaverLogger logger, IEnumerable<string> referencePaths)
     {
