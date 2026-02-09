@@ -13,7 +13,6 @@
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="none" />
     <PackageReference Include="FodyPackaging" Version="6.9.3" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" PrivateAssets="All" />
