@@ -1,19 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\src\MixedIL\MixedIL.targets" />
   <Import Project="..\..\src\LocalInclude.props" />
   <Import Project="..\CopyILFile.targets" />
-
   <PropertyGroup>
     <TargetFrameworks>net472;net8.0;net9.0</TargetFrameworks>
     <DisableFody>true</DisableFody>
     <IsPackable>false</IsPackable>
     <IsTestProject>false</IsTestProject>
   </PropertyGroup>
-
   <ItemGroup>
+    <PackageReference Include="xunit.v3.assert" />
+    <PackageReference Include="xunit.v3.extensibility.core" />
     <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
-    <PackageReference Include="xunit" Version="2.9.3" />
   </ItemGroup>
-
 </Project>

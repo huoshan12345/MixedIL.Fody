@@ -1,26 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <IsWindows Condition="'$(OS)' == 'Windows_NT'">true</IsWindows>
     <TargetFrameworks Condition="'$(IsWindows)' == 'true'">net472;net8.0;net9.0;net10.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(IsWindows)' != 'true'">net8.0;net9.0;net10.0</TargetFrameworks>
     <DisableFody>true</DisableFody>
-    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="All" />
   </ItemGroup>
-
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
-    <PackageReference Include="IsExternalInit" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="IsExternalInit" PrivateAssets="all" />
     <!--to fix the error: "Could not load file or assembly 'System.Reflection.Metadata" when running tests on net472-->
-    <PackageReference Include="System.Reflection.Metadata" Version="10.0.5" />
+    <PackageReference Include="System.Reflection.Metadata" />
     <Reference Include="System.Runtime" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\MixedIL.Fody\MixedIL.Fody.csproj" />
     <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
@@ -29,5 +25,4 @@
     <ProjectReference Include="..\MixedIL.Tests.InvalidAssemblyToProcess\MixedIL.Tests.InvalidAssemblyToProcess.csproj" />
     <ProjectReference Include="..\MixedIL.Tests.StandardAssemblyToProcess\MixedIL.Tests.StandardAssemblyToProcess.csproj" />
   </ItemGroup>
-
 </Project>

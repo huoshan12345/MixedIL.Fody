@@ -1,22 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace></RootNamespace>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="all" />
+    <PackageReference Include="Fody" PrivateAssets="all" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\MixedIL\MixedIL.csproj" PrivateAssets="all" />
   </ItemGroup>
-
   <Import Project="..\LocalWeaver.props" />
   <Import Project="..\LocalInclude.props" />
-
 </Project>

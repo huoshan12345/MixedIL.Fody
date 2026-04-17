@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\src\MixedIL\MixedIL.targets" />
   <Import Project="..\..\src\LocalInclude.props" />
   <Import Project="..\CopyILFile.targets" />
-
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <DisableFody>true</DisableFody>
@@ -12,18 +10,15 @@
     <_RefProject>MixedIL.Tests.AssemblyToProcess</_RefProject>
     <_RefProjectDir>..\$(_RefProject)\</_RefProjectDir>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="$(_RefProjectDir)**\*.cs;" Exclude="$(_RefProjectDir)\Properties\**;$(_RefProjectDir)\obj\**;$(_RefProjectDir)\AssemblyToProcessReference.cs;$(_RefProjectDir)\UnsafeTests.cs" Link="$(_RefProject)\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="$(_RefProjectDir)\**\*.il;" Exclude="$(_RefProjectDir)\obj\**;" Link="$(_RefProject)\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Include="xunit.v3.assert" />
+    <PackageReference Include="xunit.v3.extensibility.core" />
     <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
-    <PackageReference Include="xunit" Version="2.9.3" />
   </ItemGroup>
 </Project>
-

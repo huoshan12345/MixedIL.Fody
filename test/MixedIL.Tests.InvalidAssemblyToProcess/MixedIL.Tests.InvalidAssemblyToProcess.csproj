@@ -1,21 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\src\MixedIL\MixedIL.targets" />
   <Import Project="..\CopyILFile.targets" />
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DisableFody>true</DisableFody>
     <IsPackable>false</IsPackable>
     <IsTestProject>false</IsTestProject>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\MixedIL.Tests.AssemblyToProcess\~TestTypes\*.cs" Link="AssemblyToProcess\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\MixedIL\MixedIL.csproj" />
   </ItemGroup>
-
 </Project>
