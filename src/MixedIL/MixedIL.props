@@ -1,6 +1,6 @@
 ﻿<Project>
   <ItemGroup>
-    <WeaverFiles Include="$(MsBuildThisFileDirectory)..\weaver\$(MSBuildThisFileName).dll" />
+    <WeaverFiles Include="$(MSBuildThisFileDirectory)..\weaver\$(MSBuildThisFileName).dll" />
   </ItemGroup>
   <ItemGroup Condition="'$(MixedILExcludeIgnoresAccessChecksToAttribute)' != 'true'">
     <Compile Condition="'$(ProjectExt)' == '.csproj'"

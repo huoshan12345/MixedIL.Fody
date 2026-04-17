@@ -6,6 +6,7 @@
   </Folder>
   <Folder Name="/build/">
     <File Path="build/bump-version.ps1" />
+    <File Path="build/clean.ps1" />
     <File Path="build/pack.ps1" />
     <File Path="build/pkg.version" />
   </Folder>
@@ -26,9 +27,7 @@
     <File Path="src/LocalWeaver.props" />
     <File Path="src/MoreFodyHelpers.props" />
     <Project Path="src/MixedIL.Fody/MixedIL.Fody.csproj" />
-    <Project Path="src/MixedIL/MixedIL.csproj">
-      <BuildDependency Project="src/MixedIL.Fody/MixedIL.Fody.csproj" />
-    </Project>
+    <Project Path="src/MixedIL/MixedIL.csproj" />
   </Folder>
   <Folder Name="/test/">
     <File Path="test/CopyILFile.targets" />

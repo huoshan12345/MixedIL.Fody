@@ -17,7 +17,7 @@ if ([string]::IsNullOrEmpty($key)) {
 if ([string]::IsNullOrEmpty($ver)) {
   throw "the version is empty"
 }
-$srcPath = [io.path]::combine($root, "..\src\")
+$srcPath = [io.path]::combine($root, "..", "src")
 $path = [io.path]::combine($srcPath, "MixedIL")
 
 Write-Output "Packing $($path.Basename)"
