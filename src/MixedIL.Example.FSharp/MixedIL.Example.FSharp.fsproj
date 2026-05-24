@@ -4,6 +4,7 @@
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
+    <IsPackable>false</IsPackable>
     <RootNamespace />
   </PropertyGroup>
 
