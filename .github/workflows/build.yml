@@ -40,7 +40,7 @@ jobs:
         with:
           filters: |
             build:
-              - '*..rsp'
+              - '*.rsp'
               - '*.sln'
               - '*.slnx'
               - .github/workflows/build.yml
