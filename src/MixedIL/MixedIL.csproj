@@ -4,7 +4,6 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <IsPackable>true</IsPackable>
-    <DebugType>embedded</DebugType>
     <RootNamespace></RootNamespace>
     <WeaverPropsFile>MixedIL.props</WeaverPropsFile>
     <!-- FodyPackaging.props sets GeneratePackageOnBuild=true and overrides Directory.Build.props; keep this disabled here to ensure dotnet pack builds referenced project outputs correctly. -->
@@ -18,9 +17,6 @@
     <Content Include="System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.fs" Pack="true" BuildAction="None" PackagePath="content\" />
     <Content Include="System\Runtime\CompilerServices\IgnoresAccessChecksToAttribute.cs" Pack="true" BuildAction="None" PackagePath="content\" />
     <Content Include="MixedIL.targets" Pack="true" BuildAction="None" PackagePath="build\MixedIL.Fody.targets" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" />
   </ItemGroup>
   <Import Project="..\MoreFodyHelpers.props" />
 </Project>

@@ -27,7 +27,9 @@
     <File Path="src/LocalWeaver.props" />
     <File Path="src/MoreFodyHelpers.props" />
     <Project Path="src/MixedIL.Fody/MixedIL.Fody.csproj" />
-    <Project Path="src/MixedIL/MixedIL.csproj" />
+    <Project Path="src/MixedIL/MixedIL.csproj">
+      <BuildDependency Project="src/MixedIL.Fody/MixedIL.Fody.csproj" />
+    </Project>
   </Folder>
   <Folder Name="/test/">
     <File Path="test/CopyILFile.targets" />
