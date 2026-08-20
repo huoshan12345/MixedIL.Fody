@@ -13,7 +13,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <PropertyGroup Condition="$(MSBuildProjectName) == 'InterfaceBaseInvoke.Tests'">
+  <PropertyGroup Condition="$(MSBuildProjectName) == 'MixedIL.Tests'">
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-trx</TestingPlatformCommandLineArguments>
   </PropertyGroup>
 </Project>
