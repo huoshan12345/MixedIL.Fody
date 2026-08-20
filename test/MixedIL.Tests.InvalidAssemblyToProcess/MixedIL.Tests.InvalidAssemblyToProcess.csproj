@@ -2,9 +2,7 @@
   <Import Project="..\..\src\MixedIL\MixedIL.targets" />
   <Import Project="..\CopyILFile.targets" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <DisableFody>true</DisableFody>
-    <IsPackable>false</IsPackable>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <IsTestProject>false</IsTestProject>
   </PropertyGroup>
   <ItemGroup>

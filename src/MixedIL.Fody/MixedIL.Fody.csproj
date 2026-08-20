@@ -8,6 +8,7 @@
     <RootNamespace></RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Use Nullable instead of PolySharp to avoid bringing ValueTuple into the project that uses this package. -->
     <PackageReference Include="Nullable" PrivateAssets="all" />
     <PackageReference Include="MoreFodyHelpers" GeneratePathProperty="true" />
   </ItemGroup>

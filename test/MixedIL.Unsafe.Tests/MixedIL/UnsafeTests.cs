@@ -1,11 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace MixedIL.Tests;
+namespace MixedIL;
 
 public class UnsafeTests
 {
@@ -174,6 +176,16 @@ public class UnsafeTests
         Assert.Equal(512, Unsafe.SizeOf<Byte512>());
     }
 
+    public static readonly TheoryData<int, byte> InitBlockData = new()
+    {
+        {0, 1},
+        {1, 1},
+        {10, 0},
+        {10, 2},
+        {10, 255},
+        {10000, 255},
+    };
+
     [Theory]
     [MemberData(nameof(InitBlockData))]
     public unsafe void InitBlockStack(int numBytes, byte value)
@@ -275,16 +287,15 @@ public class UnsafeTests
             Assert.Equal(bytePtr[i], value);
         }
     }
-
-    public static IEnumerable<object[]> InitBlockData()
-    {
-        yield return new object[] { 0, 1 };
-        yield return new object[] { 1, 1 };
-        yield return new object[] { 10, 0 };
-        yield return new object[] { 10, 2 };
-        yield return new object[] { 10, 255 };
-        yield return new object[] { 10000, 255 };
-    }
+    
+    public static readonly TheoryData<int> CopyBlockData =
+    [
+        0,
+        1,
+        10,
+        100,
+        100000
+    ];
 
     [Theory]
     [MemberData(nameof(CopyBlockData))]
@@ -382,15 +393,6 @@ public class UnsafeTests
         }
     }
 
-    public static IEnumerable<object[]> CopyBlockData()
-    {
-        yield return new object[] { 0 };
-        yield return new object[] { 1 };
-        yield return new object[] { 10 };
-        yield return new object[] { 100 };
-        yield return new object[] { 100000 };
-    }
-
     [Fact]
     public void As()
     {
@@ -440,7 +442,7 @@ public class UnsafeTests
     [Fact]
     public unsafe void AsRef()
     {
-        byte[] b = new byte[4] { 0x42, 0x42, 0x42, 0x42 };
+        byte[] b = [0x42, 0x42, 0x42, 0x42];
         fixed (byte* p = b)
         {
             ref int r = ref Unsafe.AsRef<int>(p);
@@ -454,7 +456,7 @@ public class UnsafeTests
     [Fact]
     public void InAsRef()
     {
-        int[] a = new int[] { 0x123, 0x234, 0x345, 0x456 };
+        int[] a = [0x123, 0x234, 0x345, 0x456];
 
         ref int r = ref Unsafe.AsRef(a[0]);
         Assert.Equal(0x123, r);
@@ -466,7 +468,7 @@ public class UnsafeTests
     [Fact]
     public void RefAs()
     {
-        byte[] b = new byte[4] { 0x42, 0x42, 0x42, 0x42 };
+        byte[] b = [0x42, 0x42, 0x42, 0x42];
 
         ref int r = ref Unsafe.As<byte, int>(ref b[0]);
         Assert.Equal(0x42424242, r);
@@ -478,7 +480,7 @@ public class UnsafeTests
     [Fact]
     public void RefAdd()
     {
-        int[] a = new int[] { 0x123, 0x234, 0x345, 0x456 };
+        int[] a = [0x123, 0x234, 0x345, 0x456];
 
         ref int r1 = ref Unsafe.Add(ref a[0], 1);
         Assert.Equal(0x234, r1);
@@ -493,7 +495,7 @@ public class UnsafeTests
     [Fact]
     public unsafe void VoidPointerAdd()
     {
-        int[] a = new int[] { 0x123, 0x234, 0x345, 0x456 };
+        int[] a = [0x123, 0x234, 0x345, 0x456];
 
         fixed (void* ptr = a)
         {
@@ -520,7 +522,7 @@ public class UnsafeTests
     [Fact]
     public void RefAddIntPtr()
     {
-        int[] a = new int[] { 0x123, 0x234, 0x345, 0x456 };
+        int[] a = [0x123, 0x234, 0x345, 0x456];
 
         ref int r1 = ref Unsafe.Add(ref a[0], (IntPtr)1);
         Assert.Equal(0x234, r1);
@@ -535,7 +537,7 @@ public class UnsafeTests
     [Fact]
     public void RefAddNuint()
     {
-        int[] a = new int[] { 0x123, 0x234, 0x345, 0x456 };
+        int[] a = [0x123, 0x234, 0x345, 0x456];
 
         ref int r1 = ref Unsafe.Add(ref a[0], (nuint)1);
         Assert.Equal(0x234, r1);
@@ -547,7 +549,7 @@ public class UnsafeTests
     [Fact]
     public void RefAddByteOffset()
     {
-        byte[] a = new byte[] { 0x12, 0x34, 0x56, 0x78 };
+        byte[] a = [0x12, 0x34, 0x56, 0x78];
 
         ref byte r1 = ref Unsafe.AddByteOffset(ref a[0], (IntPtr)1);
         Assert.Equal(0x34, r1);
@@ -562,7 +564,7 @@ public class UnsafeTests
     [Fact]
     public void RefAddNuintByteOffset()
     {
-        byte[] a = new byte[] { 0x12, 0x34, 0x56, 0x78 };
+        byte[] a = [0x12, 0x34, 0x56, 0x78];
 
         ref byte r1 = ref Unsafe.AddByteOffset(ref a[0], 1);
         Assert.Equal(0x34, r1);
@@ -574,7 +576,7 @@ public class UnsafeTests
     [Fact]
     public void RefSubtract()
     {
-        string[] a = new string[] { "abc", "def", "ghi", "jkl" };
+        string[] a = ["abc", "def", "ghi", "jkl"];
 
         ref string r1 = ref Unsafe.Subtract(ref a[0], -2);
         Assert.Equal("ghi", r1);
@@ -589,7 +591,7 @@ public class UnsafeTests
     [Fact]
     public unsafe void VoidPointerSubtract()
     {
-        int[] a = new int[] { 0x123, 0x234, 0x345, 0x456 };
+        int[] a = [0x123, 0x234, 0x345, 0x456];
 
         fixed (void* ptr = a)
         {
@@ -616,7 +618,7 @@ public class UnsafeTests
     [Fact]
     public void RefSubtractIntPtr()
     {
-        string[] a = new string[] { "abc", "def", "ghi", "jkl" };
+        string[] a = ["abc", "def", "ghi", "jkl"];
 
         ref string r1 = ref Unsafe.Subtract(ref a[0], (IntPtr)(-2));
         Assert.Equal("ghi", r1);
@@ -631,7 +633,7 @@ public class UnsafeTests
     [Fact]
     public void RefSubtractNuint()
     {
-        string[] a = new string[] { "abc", "def", "ghi", "jkl" };
+        string[] a = ["abc", "def", "ghi", "jkl"];
 
         ref string r3 = ref Unsafe.Subtract(ref a[3], (nuint)3);
         Assert.Equal("abc", r3);
@@ -640,7 +642,7 @@ public class UnsafeTests
     [Fact]
     public void RefSubtractByteOffset()
     {
-        byte[] a = new byte[] { 0x12, 0x34, 0x56, 0x78 };
+        byte[] a = [0x12, 0x34, 0x56, 0x78];
 
         ref byte r1 = ref Unsafe.SubtractByteOffset(ref a[0], (IntPtr)(-1));
         Assert.Equal(0x34, r1);
@@ -655,7 +657,7 @@ public class UnsafeTests
     [Fact]
     public void RefSubtractNuintByteOffset()
     {
-        byte[] a = new byte[] { 0x12, 0x34, 0x56, 0x78 };
+        byte[] a = [0x12, 0x34, 0x56, 0x78];
 
         ref byte r3 = ref Unsafe.SubtractByteOffset(ref a[3], 3);
         Assert.Equal(0x12, r3);
