@@ -1,34 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net10.0;</TargetFrameworks>
+    <DisableFastUpToDateCheck>True</DisableFastUpToDateCheck>
+    <PublishAot>true</PublishAot>
     <IsPackable>false</IsPackable>
-    <RootNamespace />
+    <RootNamespace></RootNamespace>
+    <!--<DisableFody>true</DisableFody>-->
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Fody" PrivateAssets="all" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MixedIL.Fody\MixedIL.Fody.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\MixedIL\MixedIL.csproj" PrivateAssets="all" />
-  </ItemGroup>
-  
+  </ItemGroup>  
   <Import Project="..\LocalWeaver.props" />
   <Import Project="..\LocalInclude.props" />
   <ItemGroup>
-
     <Compile Include="System\ObjectExtensions.fs" />
     <Compile Include="System\ObjectHelper.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="..\MixedIL.Example\System\*.il;" Link="System\%(Filename)%(Extension)" />
   </ItemGroup>
-
-
 </Project>

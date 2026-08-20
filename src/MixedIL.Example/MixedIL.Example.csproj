@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net10.0;</TargetFrameworks>
+    <DisableFastUpToDateCheck>True</DisableFastUpToDateCheck>
+    <PublishAot>true</PublishAot>
     <IsPackable>false</IsPackable>
     <RootNamespace></RootNamespace>
+    <!--<DisableFody>true</DisableFody>-->
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fody" PrivateAssets="all" />
