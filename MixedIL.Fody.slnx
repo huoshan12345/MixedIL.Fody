@@ -12,6 +12,7 @@
   </Folder>
   <Folder Name="/config/">
     <File Path=".editorconfig" />
+    <File Path="Directory.Packages.props" />
     <File Path="NuGet.Config" />
     <File Path="README.md" />
   </Folder>
@@ -22,7 +23,6 @@
   </Folder>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
-    <File Path="src/Directory.Packages.props" />
     <File Path="src/LocalInclude.props" />
     <File Path="src/LocalWeaver.props" />
     <File Path="src/MoreFodyHelpers.props" />
@@ -34,7 +34,6 @@
   <Folder Name="/test/">
     <File Path="test/CopyILFile.targets" />
     <File Path="test/Directory.Build.props" />
-    <File Path="test/Directory.Packages.props" />
     <Project Path="test/MixedIL.Tests.AssemblyToProcess/MixedIL.Tests.AssemblyToProcess.csproj" />
     <Project Path="test/MixedIL.Tests.InvalidAssemblyToProcess/MixedIL.Tests.InvalidAssemblyToProcess.csproj" />
     <Project Path="test/MixedIL.Tests.SourceGenerator/MixedIL.Tests.SourceGenerator.csproj" />
